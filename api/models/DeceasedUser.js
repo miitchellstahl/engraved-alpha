@@ -1,5 +1,11 @@
 import mongoose from "mongoose";
 
+const eulogyItemSchema = new mongoose.Schema({
+  eulogySpeech: { type: String },
+  eulogyAuthor: { type: String },
+  eulogyAuthorPhotoUrl: { type: String },
+});
+
 const deceasedUserSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   firstName: { type: String, required: true },
@@ -11,9 +17,9 @@ const deceasedUserSchema = new mongoose.Schema({
   cityDied: { type: String, required: true },
   stateDied: { type: String, required: true },
   obituary: { type: String },
+  eulogies: [eulogyItemSchema],
   eulogy: { type: String },
   eulogyAuthor: { type: String },
-  eulogyAuthorPhoto: { type: String },
   profilePhotoUrl: { type: String },
 });
 

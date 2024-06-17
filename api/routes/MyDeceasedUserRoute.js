@@ -29,7 +29,7 @@ router.post(
 );
 router.patch(
   "/:deceasedUserId",
-  upload.single("eulogyAuthorPhoto"),
+  upload.any(),
   validateUpdateDeceasedUserCreateRequest,
   verifyToken,
   myDeceasedUserController.updateDeceasedUser

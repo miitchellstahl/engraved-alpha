@@ -1,4 +1,4 @@
-import DeceasedUser from "../models/DeceasedUser.js";
+import DeceasedUser from "../models/deceasedUser.js";
 import cloudinary from "cloudinary";
 import OpenAI from "openai";
 
@@ -94,7 +94,7 @@ const createDeceasedUser = async (req, res) => {
 };
 
 const updateDeceasedUser = async (req, res) => {
-  const { obituary, eulogy, eulogyAuthor } = req.body;
+  const { obituary, eulogy, eulogyAuthor, eulogies } = req.body;
 
   try {
     const deceasedUser = await DeceasedUser.findById(req.params.deceasedUserId);
@@ -103,9 +103,30 @@ const updateDeceasedUser = async (req, res) => {
     deceasedUser.eulogy = eulogy;
     deceasedUser.eulogyAuthor = eulogyAuthor;
 
-    if (req.file) {
-      const eulogyAuthorPhoto = await uploadImage(req.file);
-      deceasedUser.eulogyAuthorPhoto = eulogyAuthorPhoto;
+    // Handle eulogies
+    if (eulogies && Array.isArray(eulogies)) {
+      // Clear existing eulogies array
+      deceasedUser.eulogies = [];
+
+      // Iterate over eulogies and handle image upload
+      for (const [index, eulogy] of eulogies.entries()) {
+        let eulogyAuthorPhotoUrl = "";
+
+        // Check if an image file is provided for the eulogy
+        const file = req.files.find(
+          (file) => file.fieldname === `eulogies[${index}][eulogyAuthorPhoto]`
+        );
+        if (file) {
+          eulogyAuthorPhotoUrl = await uploadImage(file);
+        }
+
+        // Append eulogy with image URL to eulogies array
+        deceasedUser.eulogies.push({
+          eulogySpeech: eulogy.eulogySpeech,
+          eulogyAuthor: eulogy.eulogyAuthor,
+          eulogyAuthorPhotoUrl,
+        });
+      }
     }
 
     await deceasedUser.save();

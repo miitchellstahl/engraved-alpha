@@ -32,7 +32,7 @@ const ProfilePage = () => {
   );
 
   return (
-    <div className="container px-10  space-y-6">
+    <div className="container px-10 space-y-6 mb-5">
       <div className="w-full bg-purple-300 h-[200px] rounded-t-md p-5">
         <h1 className="text-gray-900 text-3xl font-bold">Hello {user?.name}</h1>
       </div>

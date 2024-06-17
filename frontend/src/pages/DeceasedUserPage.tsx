@@ -14,6 +14,7 @@ const DeceasedUserPage = () => {
     () => getMyDeceasedUser(deceasedUserId as string),
     {}
   );
+  console.log(deceasedUser);
 
   //converts the date response to date format
   const formatDate = (dateString: string) => {
@@ -28,7 +29,7 @@ const DeceasedUserPage = () => {
   return (
     <div>
       {" "}
-      <div className="relative">
+      <div className="relative mb-5">
         <div className="w-full h-[400px] absolute top-0">
           <div className="bg-purple-400 opacity-30 w-full h-full absolute top-0"></div>
         </div>
@@ -70,17 +71,20 @@ const DeceasedUserPage = () => {
                     content={deceasedUser.obituary}
                   />
                 )}
-                {deceasedUser?.obituary && (
-                  <PinnedDeceasedUserCard
-                    profilePhoto={deceasedUser?.eulogyAuthorPhoto}
-                    title={
-                      deceasedUser?.eulogyAuthor +
-                      "'s Eulogy to " +
-                      deceasedUser?.firstName
-                    }
-                    content={deceasedUser.eulogy}
-                  />
-                )}
+                {deceasedUser?.eulogies &&
+                  deceasedUser.eulogies.map((eulogy: any) => {
+                    return (
+                      <PinnedDeceasedUserCard
+                        profilePhoto={eulogy.eulogyAuthorPhotoUrl}
+                        title={
+                          eulogy.eulogyAuthor +
+                          "'s Eulogy to " +
+                          deceasedUser?.firstName
+                        }
+                        content={eulogy.eulogySpeech}
+                      />
+                    );
+                  })}
               </div>
             </div>
           </div>

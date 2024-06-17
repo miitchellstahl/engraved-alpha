@@ -71,7 +71,7 @@ const CreateObituaryPage = () => {
   switch (step) {
     case 1:
       return (
-        <div className="container pt-5">
+        <div className="container pt-5 mb-5">
           <Badge className="flex w-fit gap-2 bg-purple-900 hover:bg-purple-800 mb-5">
             {" "}
             <Sparkle size={15} />
@@ -104,7 +104,7 @@ const CreateObituaryPage = () => {
             MULTIPLE EULOGIES
           </h1>
           <Link to={`/profile/${deceasedUserId}`}>
-            <Button>Go to {deceasedUser.firstName}'s Profile</Button>
+            <Button>Go to {deceasedUser?.firstName}'s Profile</Button>
           </Link>
         </div>
       );

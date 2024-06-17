@@ -5,12 +5,14 @@ import { UserContext } from "@/UserContext";
 import { useContext } from "react";
 import HeaderMenu from "./HeaderMenu";
 import { Separator } from "./ui/separator";
+import { Input } from "./ui/input";
+import { SearchIcon } from "lucide-react";
 
 const Header = () => {
   const { isLoggedIn } = useContext(UserContext);
 
   return (
-    <header className="flex flex-col gap-4  px-10 pt-4">
+    <header className="flex flex-col gap-2 px-10 pt-2">
       <div className="flex justify-between items-center">
         <Link to={"/"} className="flex items-center gap-1">
           <svg
@@ -29,29 +31,13 @@ const Header = () => {
           </svg>
           <span className="font-bold text-xl">Engraved</span>
         </Link>
-        <div className="flex border items-center border-gray-300 rounded-full py-2 px-4 gap-2 shadow-md shadow-gray-100">
-          <div>Anywhere</div>
-          <div className="border-l h-full border-gray-300"></div>
-          <div>Any week</div>
-          <div className="border-l h-full border-gray-300"></div>
-          <div>add Guests</div>
-          <button className="bg-red-500 text-white p-2 rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-              />
-            </svg>
-          </button>
-        </div>
+
+        {/* <div className=" w-full px-30 flex gap-4">
+          <Input className=" w-3/5" />
+          <Button variant="outline" className="p-2 w-fit">
+            <SearchIcon size={20} className="text-purple-900" />
+          </Button>
+        </div> */}
         {isLoggedIn ? (
           <div className=" flex gap-2">
             <Link to={"/create-obituary"}>
@@ -65,6 +51,7 @@ const Header = () => {
           </Link>
         )}
       </div>
+
       <Separator />
     </header>
   );

@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/tooltip";
 import { DeceasedUser } from "@/types";
 import { useEffect } from "react";
+import EulogySection from "./EulogySection";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   onSave: (DeceasedUserFormData: FormData) => void;
@@ -34,11 +36,15 @@ const formSchema = z.object({
   obituary: z
     .string({ required_error: "Obituary is required" })
     .min(1, "Name is required"),
-  eulogy: z.string().optional(),
-  eulogyAuthor: z.string().optional(),
-  eulogyAuthorPhoto: z
-    .instanceof(File, { message: "Image is required" })
-    .optional(),
+  eulogies: z.array(
+    z.object({
+      eulogySpeech: z.string().optional(),
+      eulogyAuthor: z.string().optional(),
+      eulogyAuthorPhoto: z
+        .instanceof(File, { message: "Image is required" })
+        .optional(),
+    })
+  ),
 });
 
 type DeceasedUserFormData = z.infer<typeof formSchema>;
@@ -57,14 +63,30 @@ const ConfirmPinnedForm = ({ onSave, isLoading, deceasedUser }: Props) => {
 
     formData.append("obituary", formDataJson.obituary);
 
-    if (formDataJson.eulogyAuthorPhoto) {
-      formData.append("eulogyAuthorPhoto", formDataJson.eulogyAuthorPhoto);
-    }
-    if (formDataJson.eulogy) {
-      formData.append("eulogy", formDataJson.eulogy);
-    }
-    if (formDataJson.eulogyAuthor) {
-      formData.append("eulogyAuthor", formDataJson.eulogyAuthor);
+    if (formDataJson.eulogies) {
+      formDataJson.eulogies.forEach((eulogy, index) => {
+        if (eulogy.eulogySpeech) {
+          formData.append(
+            `eulogies[${index}][eulogySpeech]`,
+            eulogy.eulogySpeech
+          );
+        }
+        if (eulogy.eulogyAuthor) {
+          formData.append(
+            `eulogies[${index}][eulogyAuthor]`,
+            eulogy.eulogyAuthor
+          );
+        }
+        if (
+          eulogy.eulogyAuthorPhoto &&
+          eulogy.eulogyAuthorPhoto instanceof File
+        ) {
+          formData.append(
+            `eulogies[${index}][eulogyAuthorPhoto]`,
+            eulogy.eulogyAuthorPhoto
+          );
+        }
+      });
     }
     console.log(formDataJson);
 
@@ -108,86 +130,9 @@ const ConfirmPinnedForm = ({ onSave, isLoading, deceasedUser }: Props) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="eulogy"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <div className="flex gap-2 items-center justify-between">
-                <FormLabel>Add a eulogy speech</FormLabel>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Button variant="outline" className="p-2">
-                        <InfoIcon size={20} className="text-gray-400" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>You can always add this later</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+        <Separator />
+        <EulogySection />
 
-              <FormControl>
-                <Textarea placeholder="Provide a eulogy speech." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="eulogyAuthor"
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <div className="flex gap-2 items-center justify-between">
-                <FormLabel>Name of eulogy author</FormLabel>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Button variant="outline" className="p-2">
-                        <InfoIcon size={20} className="text-gray-400" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>You can always add this later</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-
-              <FormControl>
-                <Input placeholder="Who wrote this eulogy?" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <div className="image">
-          <FormField
-            control={form.control}
-            name="eulogyAuthorPhoto"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormLabel>Eulogy Photo</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    accept=".jpg, .jpeg, .png"
-                    onChange={(event) =>
-                      field.onChange(
-                        event.target.files ? event.target.files[0] : null
-                      )
-                    }
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         {isLoading ? (
           <LoadingButton />
         ) : (
