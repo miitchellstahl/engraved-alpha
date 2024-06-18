@@ -13,27 +13,37 @@ import { useQuery } from "react-query";
 import { getMyUser } from "@/api/MyUserApi";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "./ui/avatar";
+import { Skeleton } from "./ui/skeleton";
+import { ChevronDown, ChevronDownCircle } from "lucide-react";
 
 const HeaderMenu = () => {
-  const { data: user } = useQuery("getUser", getMyUser, {
+  const { data: user, isLoading } = useQuery("getUser", getMyUser, {
     retry: false,
   });
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button className="image flex gap-2 select-none">
-          {user?.imageUrl && (
+        <Button variant="outline" className="image flex gap-2 select-none">
+          {isLoading ? (
+            <Skeleton className="h-6 w-6 rounded-xl" />
+          ) : (
             <div>
               <Avatar className="h-6 w-6">
                 <AvatarImage src={user?.imageUrl} />
               </Avatar>
             </div>
           )}
-          {user?.name}
+
+          {isLoading ? (
+            <Skeleton className="w-20 h-2" />
+          ) : (
+            <span>{user?.name}</span>
+          )}
+          <ChevronDown size={15} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link to={"/profile"}>

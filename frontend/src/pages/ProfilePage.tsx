@@ -8,11 +8,17 @@ import { updateMyUser } from "@/api/MyUserApi";
 import { getMyDeceasedUsers } from "@/api/MyDeceasedUserApi";
 import DeceasedUserCard from "@/components/DeceasedUserCard";
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
+import LoadingDeceasedUserCard from "@/components/LoadingDeceasedUserCard";
 
 const ProfilePage = () => {
   const queryClient = useQueryClient();
-  const { data: user } = useQuery("getUser", getMyUser, {});
-  const { data: deceasedUsers } = useQuery(
+  const { data: user, isLoading: isUserLoading } = useQuery(
+    "getUser",
+    getMyUser,
+    {}
+  );
+  const { data: deceasedUsers, isLoading: isDeceasedUserLoading } = useQuery(
     "getDeceasedUsers",
     getMyDeceasedUsers,
     {}
@@ -34,7 +40,16 @@ const ProfilePage = () => {
   return (
     <div className="container px-10 space-y-6 mb-5">
       <div className="w-full bg-purple-300 h-[200px] rounded-t-md p-5">
-        <h1 className="text-gray-900 text-3xl font-bold">Hello {user?.name}</h1>
+        {isUserLoading ? (
+          <div className="flex flex-col gap-1">
+            <Skeleton className="w-[250px] h-4" />
+            <Skeleton className="w-[250px] h-4" />
+          </div>
+        ) : (
+          <h1 className="text-gray-900 text-3xl font-bold">
+            Hello {user?.name}
+          </h1>
+        )}
       </div>
 
       <Tabs defaultValue="obituaries">
@@ -53,13 +68,18 @@ const ProfilePage = () => {
                 </Link>
               </div>
             )}
-            {deceasedUsers?.map((deceasedUser: any) => (
-              //create card component
-              <DeceasedUserCard
-                key={deceasedUser.id}
-                deceasedUser={deceasedUser}
-              />
-            ))}
+            {isDeceasedUserLoading ? (
+              <LoadingDeceasedUserCard />
+            ) : (
+              deceasedUsers?.map((deceasedUser: any) => (
+                //create card component
+                <DeceasedUserCard
+                  key={deceasedUser.id}
+                  deceasedUser={deceasedUser}
+                  isLoading={isDeceasedUserLoading}
+                />
+              ))
+            )}
           </div>
         </TabsContent>
         <TabsContent value="edit-profile">

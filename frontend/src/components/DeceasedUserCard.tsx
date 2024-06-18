@@ -2,11 +2,13 @@ import { AspectRatio } from "./ui/aspect-ratio";
 import { Card, CardContent } from "./ui/card";
 import { DeceasedUser } from "@/types";
 import { Link } from "react-router-dom";
+import { Skeleton } from "./ui/skeleton";
 
 type Props = {
   deceasedUser: DeceasedUser;
+  isLoading: boolean;
 };
-const DeceasedUserCard = ({ deceasedUser }: Props) => {
+const DeceasedUserCard = ({ deceasedUser, isLoading }: Props) => {
   const deathDate = new Date(deceasedUser.deathDate);
   const yearDied = deathDate.getFullYear();
   return (
@@ -19,6 +21,7 @@ const DeceasedUserCard = ({ deceasedUser }: Props) => {
             alt="User Profile Picture"
           />
         </AspectRatio>
+
         <CardContent className="flex-none mt-0 p-0">
           <h2 className="text-lg font-bold group-hover:underline">
             {deceasedUser.firstName} {deceasedUser.lastName}
