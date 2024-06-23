@@ -1,6 +1,8 @@
 import DeceasedUser from "../models/deceasedUser.js";
 import cloudinary from "cloudinary";
 import OpenAI from "openai";
+const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
+import fetch from "node-fetch";
 
 const openai = new OpenAI();
 
@@ -39,12 +41,18 @@ const createDeceasedUser = async (req, res) => {
     stateBorn,
     cityDied,
     stateDied,
+    cityBornLongitude,
+    cityBornLatitude,
+    cityDiedLatitude,
+    cityDiedLongitude,
     survivors,
     preDeceased,
     education,
     career,
     personality,
   } = req.body;
+
+  console.log(cityBornLatitude);
 
   const obituaryPrompt = `You are an obituary writer. Given the following information, write a somber obituary and space it out into a few paragraphs. Just return the obituary: 
   Name: ${firstName} ${lastName},
@@ -63,8 +71,6 @@ const createDeceasedUser = async (req, res) => {
     model: "gpt-3.5-turbo",
   });
 
-  console.log(completion.choices[0].message.content);
-
   try {
     const deceasedUser = new DeceasedUser({
       firstName,
@@ -75,6 +81,10 @@ const createDeceasedUser = async (req, res) => {
       stateBorn,
       cityDied,
       stateDied,
+      cityBornLatitude,
+      cityBornLongitude,
+      cityDiedLatitude,
+      cityDiedLongitude,
       obituary: completion.choices[0].message.content,
     });
     deceasedUser.user = req.userId;

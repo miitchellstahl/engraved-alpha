@@ -28,7 +28,7 @@ const PinnedDeceasedUserCard = ({
           <Skeleton className="h-[40px] w-[40px] rounded-sm" />
         ) : (
           <img
-            className="h-[40px] w-[40px] rounded-sm"
+            className="h-[40px] w-[40px] rounded-sm object-cover"
             src={profilePhoto}
             alt=""
           />

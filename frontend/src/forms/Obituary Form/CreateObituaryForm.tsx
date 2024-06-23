@@ -29,6 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import LocationDropDownSection from "./LocationDropDownSection";
 
 type Props = {
   onSave: (DeceasedUserFormData: FormData) => void;
@@ -59,6 +60,10 @@ const formSchema = z.object({
     .string({ required_error: "State died is required" })
     .min(1, "Name is required"),
   obituary: z.string().optional(),
+  cityDiedLongitude: z.string().optional(),
+  cityDiedLatitude: z.string().optional(),
+  cityBornLatitude: z.string().optional(),
+  cityBornLongitude: z.string().optional(),
   profilePhoto: z.instanceof(File, { message: "Image is required" }).optional(),
   profilePhotoUrl: z.string().optional(),
   survivors: z.string().optional(),
@@ -87,6 +92,19 @@ const CreateObituaryForm = ({ onSave, isLoading }: Props) => {
     formData.append("stateBorn", formDataJson.stateBorn);
     formData.append("stateDied", formDataJson.stateDied);
 
+    if (formDataJson.cityBornLongitude) {
+      formData.append("cityBornLongitude", formDataJson.cityBornLongitude);
+    }
+    if (formDataJson.cityBornLatitude) {
+      formData.append("cityBornLatitude", formDataJson.cityBornLatitude);
+    }
+    if (formDataJson.cityDiedLatitude) {
+      formData.append("cityDiedLatitude", formDataJson.cityDiedLatitude);
+    }
+    if (formDataJson.cityDiedLongitude) {
+      formData.append("cityDiedLongitude", formDataJson.cityDiedLongitude);
+    }
+
     if (formDataJson.profilePhoto) {
       formData.append("profilePhoto", formDataJson.profilePhoto);
     }
@@ -108,7 +126,11 @@ const CreateObituaryForm = ({ onSave, isLoading }: Props) => {
   };
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="space-y-6"
+        onSubmit={form.handleSubmit(onSubmit)}
+        autoComplete="new-password"
+      >
         <div className="">
           {" "}
           <h2>Create obituary</h2>
@@ -126,7 +148,11 @@ const CreateObituaryForm = ({ onSave, isLoading }: Props) => {
               <FormItem className="flex-1">
                 <FormLabel>First name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Name" {...field} />
+                  <Input
+                    placeholder="Name"
+                    {...field}
+                    autoComplete="new-password"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -139,7 +165,11 @@ const CreateObituaryForm = ({ onSave, isLoading }: Props) => {
               <FormItem className="flex-1">
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Name" {...field} />
+                  <Input
+                    placeholder="Name"
+                    {...field}
+                    autoComplete="new-password"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -232,7 +262,7 @@ const CreateObituaryForm = ({ onSave, isLoading }: Props) => {
             )}
           />
         </div>
-        <div className="flex gap-6">
+        {/* <div className="flex gap-6">
           <FormField
             control={form.control}
             name="cityBorn"
@@ -285,7 +315,9 @@ const CreateObituaryForm = ({ onSave, isLoading }: Props) => {
               </FormItem>
             )}
           />
-        </div>
+        </div> */}
+
+        <LocationDropDownSection />
 
         <FormField
           control={form.control}

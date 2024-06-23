@@ -16,7 +16,7 @@ const DeceasedUserCard = ({ deceasedUser, isLoading }: Props) => {
       <Card className="overflow-hidden h-500px group border-none shadow-none rounded-md space-y-1">
         <AspectRatio>
           <img
-            className="object-cover"
+            className="object-cover w-full h-full"
             src={deceasedUser.profilePhotoUrl}
             alt="User Profile Picture"
           />

@@ -14,7 +14,7 @@ import { getMyUser } from "@/api/MyUserApi";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
-import { ChevronDown, ChevronDownCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 const HeaderMenu = () => {
   const { data: user, isLoading } = useQuery("getUser", getMyUser, {
