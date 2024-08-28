@@ -23,31 +23,31 @@ const PinnedDeceasedUserCard = ({
   };
   return (
     <Card className="p-5 space-y-4 shadow-sm flex flex-col">
-      <CardHeader className="flex flex-row gap-4 p-0 justify-start items-start space-y-0">
+      <CardHeader className="flex flex-row gap-3 p-0 justify-start items-start space-y-0">
         {isLoading ? (
           <Skeleton className="h-[40px] w-[40px] rounded-sm" />
         ) : (
           <img
-            className="h-[40px] w-[40px] rounded-sm object-cover"
+            className="h-[40px] w-[40px] rounded-sm object-cover object-left"
             src={profilePhoto}
             alt=""
           />
         )}
 
-        <h2 className="font-bold m-0 my-0 mt-0 p-0">{title}</h2>
+        <h2 className="font-bold">{title}</h2>
       </CardHeader>
       <Separator />
       <div className="content whitespace-pre-wrap break-words">
-        {isExpanded ? content : previewContent + "..."}
+        {isExpanded ? content + " " : previewContent + "... "}
+        {content.length > 485 && (
+          <span
+            onClick={toggleExpand}
+            className="text-gray-700 underline text-md cursor-pointer"
+          >
+            {isExpanded ? "Show less" : "Read more"}
+          </span>
+        )}
       </div>
-      {content.length > 485 && (
-        <span
-          onClick={toggleExpand}
-          className="text-gray-700 underline text-md cursor-pointer"
-        >
-          {isExpanded ? "Show less" : "Read more"}
-        </span>
-      )}
     </Card>
   );
 };

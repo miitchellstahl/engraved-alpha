@@ -53,10 +53,10 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="mt-4 grow w-full flex items-center justify-center">
+    <div className="mt-4 w-full flex items-center justify-center">
       <Form {...form}>
         {" "}
-        <div className="flex w-full flex-col gap-5 -mt-32">
+        <div className="flex w-full flex-col gap-5">
           <h1 className="text-4xl text-center mb-4">Login</h1>
           <form
             className="w-2/4 mx-auto space-y-2"
@@ -93,7 +93,11 @@ const LoginPage = () => {
               )}
             />
             <div className="form-controls my-5">
-              {isLoginUserLoading ? <LoadingButton /> : <Button>Login</Button>}
+              {isLoginUserLoading ? (
+                <LoadingButton>Logging in</LoadingButton>
+              ) : (
+                <Button>Login</Button>
+              )}
 
               <div className="text-center py-2 text-gray-500">
                 Don't have an account?{" "}

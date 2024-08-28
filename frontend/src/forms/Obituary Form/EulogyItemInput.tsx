@@ -1,3 +1,4 @@
+import FileInput from "@/components/FileInput";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
@@ -51,30 +52,8 @@ const EulogyItemInput = ({ index, removeEulogyItem }: Props) => {
           </FormItem>
         )}
       />
+      <FileInput name={`eulogies[${index}][eulogyAuthorPhoto]`} />
 
-      <div className="image">
-        <FormField
-          control={control}
-          name={`eulogies[${index}][eulogyAuthorPhoto]`}
-          render={({ field }) => (
-            <FormItem className="flex-1">
-              <FormLabel>Eulogy Photo</FormLabel>
-              <FormControl>
-                <Input
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={(event) =>
-                    field.onChange(
-                      event.target.files ? event.target.files[0] : null
-                    )
-                  }
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
       <Button
         type="button"
         onClick={removeEulogyItem}

@@ -17,15 +17,26 @@ import SnowWeatherNight from "../assets/SnowWeatherNight.json";
 import RainWeather from "../assets/RainWeather.json";
 import RainWeatherNight from "../assets/RainWeatherNight.json";
 
+type WeatherDescription =
+  | "Clear"
+  | "Thunderstorm"
+  | "Drizzle"
+  | "Rain"
+  | "Snow"
+  | "Atmosphere"
+  | "Haze"
+  | "Clouds";
+
 type Props = {
   city: string;
   state: string;
   temp: number;
   currentDate: Date;
-  description: string;
+  description: WeatherDescription;
   weatherTimezone: number;
   sunsetTimestamp: number;
   sunriseTimestamp: number;
+  showWall: boolean;
 };
 
 const WallWeatherCard = ({
@@ -37,24 +48,16 @@ const WallWeatherCard = ({
   weatherTimezone,
   sunsetTimestamp,
   sunriseTimestamp,
+  showWall,
 }: Props) => {
-  console.log(weatherTimezone);
-
-  //for some reason the currentDate is displaying the actual time instead of accounting got the GMT -0400 like sunrise and sunset, making it 4 hours in advance. So I manually made it 4 hours less, this will prob need to be fixed
-  const fourHoursLessDate = new Date(
-    currentDate.getTime() - 4 * 60 * 60 * 1000
-  );
+  // Adjust the currentDate based on the weatherTimezone
   const utcTime =
-    fourHoursLessDate.getTime() + fourHoursLessDate.getTimezoneOffset() * 60000;
+    currentDate.getTime() + currentDate.getTimezoneOffset() * 60000;
   const adjustedTime = utcTime + weatherTimezone * 1000;
   const adjustedDate = new Date(adjustedTime);
 
-  const sunsetTimeLocalWeather = new Date(
-    (weatherTimezone + sunsetTimestamp) * 1000
-  );
-  const sunriseTimeLocalWeather = new Date(
-    (weatherTimezone + sunriseTimestamp) * 1000
-  );
+  const sunsetTimeLocalWeather = new Date(sunsetTimestamp * 1000);
+  const sunriseTimeLocalWeather = new Date(sunriseTimestamp * 1000);
 
   const options: Intl.DateTimeFormatOptions = {
     weekday: "long",
@@ -67,120 +70,45 @@ const WallWeatherCard = ({
     options
   ).format(adjustedDate);
 
-  //checks if local weather time is past sunset OR if it is before sunrise. if any is true, it is night
+  // Checks if local weather time is past sunset OR if it is before sunrise. if any is true, it is night
   const isNight =
     adjustedDate >= sunsetTimeLocalWeather ||
     adjustedDate <= sunriseTimeLocalWeather;
 
-  let hours = adjustedDate.getUTCHours();
-  const minutes = adjustedDate.getUTCMinutes();
-  const period = hours >= 12 ? "PM" : "AM";
-  hours = hours % 12 || 12;
-  const hoursDate = `${hours}:${minutes < 10 ? "0" : ""}${minutes} ${period}`;
+  const weatherAnimations: Record<WeatherDescription, any> = {
+    Clear: isNight ? ClearWeatherNight : ClearWeather,
+    Thunderstorm: isNight ? ThunderstormWeatherNight : ThunderstormWeather,
+    Drizzle: isNight ? DrizzleWeatherNight : DrizzleWeather,
+    Rain: isNight ? RainWeatherNight : RainWeather,
+    Snow: isNight ? SnowWeatherNight : SnowWeather,
+    Atmosphere: isNight ? AtmosphereWeatherNight : AtmosphereWeather,
+    Haze: isNight ? AtmosphereWeatherNight : AtmosphereWeather,
+    Clouds: isNight ? CloudyWeatherNight : CloudyWeather,
+  };
 
-  console.log(currentDate);
-  console.log(adjustedDate);
-  console.log("SUNRISE" + sunriseTimeLocalWeather);
-  console.log("SUNSET" + sunsetTimeLocalWeather);
-  console.log(adjustedDate);
-  console.log(hoursDate);
+  const WeatherAnimation = weatherAnimations[description];
+
   return (
-    <Card className="rounded-b-none lg:opacity-70 shadow-md relative">
-      {description === "Clear" &&
-        (isNight ? (
-          <Lottie
-            animationData={ClearWeatherNight}
-            className="absolute -top-20 -right-20"
-          />
-        ) : (
-          <Lottie
-            animationData={ClearWeather}
-            className="absolute -top-20 -right-20"
-          />
-        ))}
-
-      {description === "Thunderstorm" &&
-        (isNight ? (
-          <Lottie
-            animationData={ThunderstormWeatherNight}
-            className="absolute -top-20 -right-20"
-          />
-        ) : (
-          <Lottie
-            animationData={ThunderstormWeather}
-            className="absolute -top-20 -right-20"
-          />
-        ))}
-
-      {description === "Drizzle" &&
-        (isNight ? (
-          <Lottie
-            animationData={DrizzleWeatherNight}
-            className="absolute -top-20 -right-20"
-          />
-        ) : (
-          <Lottie
-            animationData={DrizzleWeather}
-            className="absolute -top-20 -right-20"
-          />
-        ))}
-
-      {description === "Rain" &&
-        (isNight ? (
-          <Lottie
-            animationData={RainWeatherNight}
-            className="absolute -top-20 -right-20"
-          />
-        ) : (
-          <Lottie
-            animationData={RainWeather}
-            className="absolute -top-20 -right-20"
-          />
-        ))}
-
-      {description === "Snow" &&
-        (isNight ? (
-          <Lottie
-            animationData={SnowWeatherNight}
-            className="absolute -top-20 -right-20"
-          />
-        ) : (
-          <Lottie
-            animationData={SnowWeather}
-            className="absolute -top-20 -right-20"
-          />
-        ))}
-
-      {description === "Atmosphere" &&
-        (isNight ? (
-          <Lottie
-            animationData={AtmosphereWeatherNight}
-            className="absolute -top-20 -right-20"
-          />
-        ) : (
-          <Lottie
-            animationData={AtmosphereWeather}
-            className="absolute -top-20 -right-20"
-          />
-        ))}
-
-      {description === "Clouds" &&
-        (isNight ? (
-          <Lottie
-            animationData={CloudyWeatherNight}
-            className="absolute -top-20 -right-20"
-          />
-        ) : (
-          <Lottie
-            animationData={CloudyWeather}
-            className="absolute -top-20 -right-20"
-          />
-        ))}
+    <Card
+      className={`rounded-b-none lg:bg-opacity-70 border-none shadow-md relative transition-all duration-500 ${
+        showWall ? "bg-slate-100" : "bg-slate-100 bg-opacity-0"
+      }`}
+    >
+      {WeatherAnimation && (
+        <Lottie
+          animationData={WeatherAnimation}
+          className="absolute -top-20 -right-20"
+        />
+      )}
 
       <CardHeader className="p-3">
-        <Badge className="flex gap-2 rounded-md w-fit bg-purple-900">
-          <Cloud size={20} />
-          <span>
+        <Badge
+          className={`flex gap-2 rounded-md w-fit bg-white ${
+            showWall ? "bg-opacity-100" : "bg-opacity-50"
+          }`}
+        >
+          <Cloud size={20} className={"text-gray-900"} />
+          <span className={"text-gray-900"}>
             {city}, {state}
           </span>
         </Badge>

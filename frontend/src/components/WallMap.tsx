@@ -1,10 +1,15 @@
-import { useEffect } from "react";
-import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { Badge } from "./ui/badge";
-import { MapPinIcon } from "lucide-react";
-const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY;
+import { MapPinIcon, ShieldCheckIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+
 const MAP_ID = import.meta.env.VITE_MAP_ID;
+const MAP_API_KEY = import.meta.env.VITE_MAP_API_KEY;
 
 type Props = {
   cityDiedLongitude: number;
@@ -12,6 +17,7 @@ type Props = {
   location: string;
   profilePhoto: string;
   name: string;
+  mappedByRelation: string;
 };
 
 const WallMap = ({
@@ -20,63 +26,50 @@ const WallMap = ({
   location,
   profilePhoto,
   name,
+  mappedByRelation,
 }: Props) => {
-  useEffect(() => {
-    const hideGoogleElements = () => {
-      const style = document.createElement("style");
-      style.innerHTML = `
-        .gm-style-cc, .gmnoprint {
-          display: none !important;
-        }
-        .gmnoprint {
-          display: none !important;
-        }
-      `;
-      document.head.appendChild(style);
-    };
+  const staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${cityDiedLatitude},${cityDiedLongitude}&zoom=18&scale=2&size=600x600&key=${MAP_API_KEY}&map_id=${MAP_ID}&style=feature:poi|visibility:off`;
 
-    hideGoogleElements();
-  }, []);
   return (
-    <APIProvider apiKey={MAP_API_KEY}>
-      <AspectRatio>
-        <div className="w-full h-full shadow-md rounded-b-lg">
-          <Badge className=" flex gap-2 rounded-md w-fit bg-purple-900 absolute top-3 left-3 z-10">
+    <AspectRatio className="z-30">
+      <div className="w-full h-full shadow-md rounded-b-lg z-30 relative">
+        <div className="w-full flex gap-2 justify-between items-center absolute top-3 px-3 z-40">
+          <Badge className="flex gap-2 rounded-md bg-indigo-900 z-40">
             <MapPinIcon size={20} />
-            {location}
+            <span>{location}</span>
           </Badge>
-          <Map
-            defaultZoom={17}
-            defaultCenter={{
-              lat: cityDiedLatitude,
-              lng: cityDiedLongitude,
-            }}
-            mapId={MAP_ID}
-            disableDefaultUI
-          >
-            <AdvancedMarker
-              className="flex flex-col justify-center items-center gap-2"
-              position={{
-                lat: cityDiedLatitude,
-                lng: cityDiedLongitude,
-              }}
-            >
-              <Badge className="rounded-sm py-1.5 bg-gray-50 text-gray-900">
-                {name}
-              </Badge>
-              <img
-                src={profilePhoto}
-                width={48}
-                height={48}
-                className="w-[48px] h-[48px] object-cover rounded-md border-4 border-purple-900 "
-              />
-
-              {/* ADD DOWN PIN */}
-            </AdvancedMarker>
-          </Map>
+          {mappedByRelation && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Badge className="rounded-md bg-orange-900 h-full">
+                    <ShieldCheckIcon size={20} className="text-white" />
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent>
+                  Mapped by {name}'s {mappedByRelation?.toLowerCase()}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
-      </AspectRatio>
-    </APIProvider>
+        <img
+          src={staticMapUrl}
+          alt="Map"
+          className="w-full h-full object-cover relative"
+        />
+        <div className=" top-0 left-0 absolute w-full h-full flex flex-col items-center justify-center">
+          <Badge className="rounded-sm py-1.5 bg-gray-50 text-gray-900 mb-2">
+            {name}
+          </Badge>
+          <img
+            src={profilePhoto}
+            className="w-[48px] h-[48px] object-cover object-left rounded-md border-4 border-indigo-900"
+            alt={name}
+          />
+        </div>
+      </div>
+    </AspectRatio>
   );
 };
 

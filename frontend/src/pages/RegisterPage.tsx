@@ -59,7 +59,7 @@ const RegisterPage = () => {
     <div className="mt-4 grow w-full flex items-center justify-center">
       <Form {...form}>
         {" "}
-        <div className="flex w-full flex-col gap-5 -mt-32">
+        <div className="flex w-full flex-col gap-5">
           <h1 className="text-4xl text-center mb-4">Register</h1>
           <form
             className="w-2/4 mx-auto space-y-2"

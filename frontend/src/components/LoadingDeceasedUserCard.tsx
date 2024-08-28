@@ -4,7 +4,7 @@ import { Skeleton } from "./ui/skeleton";
 
 const LoadingDeceasedUserCard = () => {
   return (
-    <Card className="overflow-hidden h-500px group border-none shadow-none rounded-md space-y-2">
+    <Card className="overflow-hidden bg-0 h-500px group border-none shadow-none rounded-md space-y-2">
       <AspectRatio>
         <Skeleton className="h-full w-full" />
       </AspectRatio>

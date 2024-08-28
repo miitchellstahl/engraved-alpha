@@ -9,23 +9,26 @@ import {
 
 import { Button } from "./ui/button";
 import SignOutButton from "./SignoutButton";
-import { useQuery } from "react-query";
-import { getMyUser } from "@/api/MyUserApi";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
 import { ChevronDown } from "lucide-react";
+import { User } from "@/types";
 
-const HeaderMenu = () => {
-  const { data: user, isLoading } = useQuery("getUser", getMyUser, {
-    retry: false,
-  });
+type Props = {
+  user: User;
+  isLoadingUser: boolean;
+};
 
+const HeaderMenu = ({ user, isLoadingUser }: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="outline" className="image flex gap-2 select-none">
-          {isLoading ? (
+        <Button
+          variant="outline"
+          className="image flex gap-2 select-none bg-0 hover:bg-gray-200 border-gray-200"
+        >
+          {isLoadingUser ? (
             <Skeleton className="h-6 w-6 rounded-xl" />
           ) : (
             <div>
@@ -35,11 +38,6 @@ const HeaderMenu = () => {
             </div>
           )}
 
-          {isLoading ? (
-            <Skeleton className="w-20 h-2" />
-          ) : (
-            <span>{user?.name}</span>
-          )}
           <ChevronDown size={15} />
         </Button>
       </DropdownMenuTrigger>
