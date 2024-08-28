@@ -22,10 +22,55 @@ const deceasedUserSchema = new mongoose.Schema({
   stateDied: { type: String, required: true },
   obituary: { type: String },
   eulogies: [eulogyItemSchema],
-  eulogy: { type: String },
-  eulogyAuthor: { type: String },
   profilePhotoUrl: { type: String },
+  createdAt: { type: Date, default: Date.now },
+  userRelation: { type: String, required: true },
+  mappedByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  mappedByRelation: { type: String },
 });
+
+// Define the virtual field
+deceasedUserSchema.virtual("photos", {
+  ref: "Photo",
+  localField: "_id",
+  foreignField: "deceasedUser",
+});
+deceasedUserSchema.virtual("mementos", {
+  ref: "Memento",
+  localField: "_id",
+  foreignField: "deceasedUser",
+});
+deceasedUserSchema.virtual("pets", {
+  ref: "Pet",
+  localField: "_id",
+  foreignField: "deceasedUser",
+});
+deceasedUserSchema.virtual("places", {
+  ref: "Place",
+  localField: "_id",
+  foreignField: "deceasedUser",
+});
+
+deceasedUserSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "user",
+    select: "-password", // Exclude the password field
+  });
+
+  // Only populate mappedByUser if the field exists
+  this.populate({
+    path: "mappedByUser",
+    select: "name _id relation",
+  });
+
+  next();
+});
+
+//Create a field to auto populate albums
+
+// Ensure virtual fields are included in the output
+deceasedUserSchema.set("toObject", { virtuals: true });
+deceasedUserSchema.set("toJSON", { virtuals: true });
 
 const DeceasedUser = mongoose.model("DeceasedUser", deceasedUserSchema);
 

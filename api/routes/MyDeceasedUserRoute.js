@@ -13,12 +13,11 @@ const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 1024 * 1024 * 5, //5 mb,
+    fileSize: 1024 * 1024 * 6, //5 mb,
   },
 });
 
-router.get("/", verifyToken, myDeceasedUserController.getDeceasedUser);
-router.get("/:deceasedUserId", myDeceasedUserController.getOneDeceasedUser);
+router.get("/", verifyToken, myDeceasedUserController.getMyDeceasedUsers);
 
 router.post(
   "/",
@@ -33,6 +32,32 @@ router.patch(
   validateUpdateDeceasedUserCreateRequest,
   verifyToken,
   myDeceasedUserController.updateDeceasedUser
+);
+
+router.post(
+  "/onboarding/start",
+  verifyToken,
+  myDeceasedUserController.startOnboarding
+);
+
+router.post(
+  "/onboarding/save",
+  verifyToken,
+  upload.any(),
+  myDeceasedUserController.saveOnboardingProgress
+);
+
+router.get(
+  "/onboarding/:onboardingId",
+  verifyToken,
+  myDeceasedUserController.getOnboardingProgress
+);
+
+router.post(
+  "/onboarding/complete",
+  verifyToken,
+  upload.any(),
+  myDeceasedUserController.completeOnboarding
 );
 
 export default router;

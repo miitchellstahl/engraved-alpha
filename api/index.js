@@ -7,6 +7,7 @@ import "dotenv/config";
 import myAuthRoute from "./routes/MyAuthRoute.js";
 import myUserRoute from "./routes/MyUserRoute.js";
 import myDeceasedUserRoute from "./routes/MyDeceasedUserRoute.js";
+import DeceasedUserRoute from "./routes/DeceasedUserRoute.js";
 import WidgetRoute from "./routes/WidgetRoute.js";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -22,7 +23,8 @@ app.use(
 
 app.use("/api/auth", myAuthRoute);
 app.use("/api/my/user", myUserRoute);
-app.use("/api/deceasedUser", myDeceasedUserRoute);
+app.use("/api/my/deceasedUser", myDeceasedUserRoute);
+app.use("/api/deceasedUser", DeceasedUserRoute);
 app.use("/api/widget", WidgetRoute);
 
 app.get("/test", (req, res) => {

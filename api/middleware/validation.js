@@ -19,6 +19,55 @@ export const validateMyRegisterRequest = [
   handleValidationErrors,
 ];
 
+export const validatePhotoPostRequest = [
+  body("author").isString().notEmpty().withMessage("Author must be a string"),
+  body("date").isISO8601().withMessage("Date must be a date").toDate(),
+
+  handleValidationErrors,
+];
+
+export const validatePlacePostRequest = [
+  body("placeLongitude")
+    .isString()
+    .notEmpty()
+    .withMessage("Longitude must be a string"),
+  body("placeLatitude")
+    .isString()
+    .notEmpty()
+    .withMessage("Latitude must be a string"),
+  body("placeName")
+    .isString()
+    .notEmpty()
+    .withMessage("Place name must be a string"),
+  body("author").isString().notEmpty().withMessage("Author must be a string"),
+  handleValidationErrors,
+];
+
+export const validateCreateAlbumRequest = [
+  body("title").isString().notEmpty().withMessage("Title must be a string"),
+  body("albumDate")
+    .isISO8601()
+    .withMessage("Album date must be a date")
+    .toDate(),
+  handleValidationErrors,
+];
+
+export const validateMementoPostRequest = [
+  body("content").isString().notEmpty().withMessage("Content must be a string"),
+  body("author").isString().notEmpty().withMessage("Author must be a string"),
+
+  handleValidationErrors,
+];
+
+export const validatePetPostRequest = [
+  body("petName").isString().notEmpty().withMessage("Title must be a string"),
+  body("petType")
+    .isString()
+    .notEmpty()
+    .withMessage("Pet type must be a string"),
+  handleValidationErrors,
+];
+
 export const validateMyLoginRequest = [
   body("email").isString().notEmpty().withMessage("Email must be a string"),
   body("password")
