@@ -25,6 +25,20 @@ function App() {
     <UserContextProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
+          <Route index element={<IndexPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/createaccount" element={<CreateAccountPage />} />
+          <Route path="/select" element={<ObituaryServiceSelectPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/create" element={<CreateObituaryPage />} />
+            <Route path="/create/users" element={<SelectOnboardUser />} />
+            <Route
+              path="/create/:onboardingId"
+              element={<CreateObituaryPage />}
+            />
+          </Route>
           <Route
             element={
               <NavigationProvider>
@@ -32,20 +46,6 @@ function App() {
               </NavigationProvider>
             }
           >
-            <Route index element={<IndexPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/createaccount" element={<CreateAccountPage />} />
-            <Route path="/select" element={<ObituaryServiceSelectPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/create" element={<CreateObituaryPage />} />
-              <Route path="/create/users" element={<SelectOnboardUser />} />
-              <Route
-                path="/create/:onboardingId"
-                element={<CreateObituaryPage />}
-              />
-            </Route>
             <Route
               path="/profile/:deceasedUserId"
               element={<DeceasedUserPage />}
