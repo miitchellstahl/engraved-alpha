@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes } from "react-router-dom";
 import IndexPage from "./pages/IndexPage";
 import LoginPage from "./pages/LoginPage";
 import Layout from "./layouts/Layout";
@@ -18,13 +18,20 @@ import DeceasedUserPetsPage from "./pages/DeceasedUserPetsPage";
 import DeceasedUserAlbumPage from "./pages/DeceasedUserAlbumPage";
 import ObituaryServiceSelectPage from "./pages/ObituaryServiceSelectPage";
 import SelectOnboardUser from "./pages/SelectOnboardUser";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
     <UserContextProvider>
-      <NavigationProvider>
-        <Routes>
-          <Route path="/" element={<Layout />}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route
+            element={
+              <NavigationProvider>
+                <Outlet />
+              </NavigationProvider>
+            }
+          >
             <Route index element={<IndexPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -38,70 +45,39 @@ function App() {
                 path="/create/:onboardingId"
                 element={<CreateObituaryPage />}
               />
-              {/* <Route
-              path="/confirm-pinned"
-              element={<CreatePinnedSectionPage />}
-            /> */}
             </Route>
             <Route
               path="/profile/:deceasedUserId"
-              element={
-                <NavigationProvider>
-                  <DeceasedUserPage />
-                </NavigationProvider>
-              }
+              element={<DeceasedUserPage />}
             />
             <Route
               path="/profile/:deceasedUserId/photos"
-              element={
-                <NavigationProvider>
-                  <DeceasedUserPhotosPage />{" "}
-                </NavigationProvider>
-              }
+              element={<DeceasedUserPhotosPage />}
             />
             <Route
               path="/profile/:deceasedUserId/albums"
-              element={
-                <NavigationProvider>
-                  <DeceasedUserAlbumsPage />{" "}
-                </NavigationProvider>
-              }
+              element={<DeceasedUserAlbumsPage />}
             />
             <Route
               path="/profile/:deceasedUserId/mementos"
-              element={
-                <NavigationProvider>
-                  <DeceasedUserMementosPage />{" "}
-                </NavigationProvider>
-              }
+              element={<DeceasedUserMementosPage />}
             />
             <Route
               path="/profile/:deceasedUserId/places"
-              element={
-                <NavigationProvider>
-                  <DeceasedUserPlacesPage />{" "}
-                </NavigationProvider>
-              }
+              element={<DeceasedUserPlacesPage />}
             />
             <Route
               path="/profile/:deceasedUserId/pets"
-              element={
-                <NavigationProvider>
-                  <DeceasedUserPetsPage />{" "}
-                </NavigationProvider>
-              }
+              element={<DeceasedUserPetsPage />}
             />
             <Route
               path="/profile/:deceasedUserId/album/:albumId"
-              element={
-                <NavigationProvider>
-                  <DeceasedUserAlbumPage />{" "}
-                </NavigationProvider>
-              }
+              element={<DeceasedUserAlbumPage />}
             />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
-        </Routes>
-      </NavigationProvider>
+        </Route>
+      </Routes>
     </UserContextProvider>
   );
 }
