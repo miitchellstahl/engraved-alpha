@@ -64,19 +64,18 @@ const TabNavigation = ({
             <Skeleton className="h-4 w-[85px] shadow-md" />
           ) : (
             <>
-              {pages[currentPage]?.name !== "Home" && (
+              {pages[currentPage]?.name !== "Home" ? (
                 <h2 className="text-md font-semibold">
                   {pages[currentPage]?.name}
                 </h2>
-              )}
-              {pages[currentPage]?.name === "Home" && (
+              ) : (
                 <h2 className="text-md font-semibold">
                   {data?.firstName} {data?.lastName}
                 </h2>
               )}
             </>
           )}
-          {pages[currentPage]?.name === "Photos" && (
+          {pages[currentPage]?.name === "Photos" ? (
             <div className="label-images flex">
               {isLoading ? (
                 <>
@@ -108,8 +107,9 @@ const TabNavigation = ({
                 </div>
               )}
             </div>
-          )}
-          {pages[currentPage]?.name === data?.album?.title && (
+          ) : null}
+
+          {pages[currentPage]?.name === data?.album?.title ? (
             <div className="label-images flex">
               {isLoading ? (
                 <>
@@ -140,8 +140,9 @@ const TabNavigation = ({
                 </div>
               )}
             </div>
-          )}
-          {pages[currentPage]?.name === "Places" && (
+          ) : null}
+
+          {pages[currentPage]?.name === "Places" ? (
             <div className="label-map flex">
               {isLoading ? (
                 <>
@@ -172,8 +173,9 @@ const TabNavigation = ({
                 </div>
               )}
             </div>
-          )}
-          {pages[currentPage]?.name === "Home" && (
+          ) : null}
+
+          {pages[currentPage]?.name === "Home" ? (
             <div className="label-images flex">
               {isLoading && isWeatherLoading ? (
                 <>
@@ -225,8 +227,9 @@ const TabNavigation = ({
                 </>
               )}
             </div>
-          )}
-          {pages[currentPage]?.name === "Albums" && (
+          ) : null}
+
+          {pages[currentPage]?.name === "Albums" ? (
             <div className="label-albums flex">
               {isLoading ? (
                 <>
@@ -254,9 +257,9 @@ const TabNavigation = ({
                 </div>
               )}
             </div>
-          )}
+          ) : null}
 
-          {pages[currentPage]?.name === "Pets" && (
+          {pages[currentPage]?.name === "Pets" ? (
             <div className="label-pets flex">
               {isLoading ? (
                 <>
@@ -285,7 +288,7 @@ const TabNavigation = ({
                 </div>
               )}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
