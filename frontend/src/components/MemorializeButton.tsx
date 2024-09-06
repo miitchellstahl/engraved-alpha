@@ -1,15 +1,13 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { User } from "@/types";
-import { Plus } from "lucide-react";
-import { Separator } from "./ui/separator";
+import { Plus, ShieldPlus } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
+import { useContext } from "react";
+import { UserContext } from "@/UserContext";
 
-type Props = {
-  user: User;
-};
-
-const MemorializeButton = ({ user }: Props) => {
+const MemorializeButton = () => {
+  const { user } = useContext(UserContext);
   return (
     <>
       {!user ? (
@@ -35,7 +33,7 @@ const MemorializeButton = ({ user }: Props) => {
           <Link to={"/select"}>
             <Button className="rounded-md flex bg-0 text-gray-900 hover:bg-gray-200">
               <div className="">
-                <Plus size={18} />
+                <ShieldPlus size={18} />
               </div>
             </Button>
           </Link>
@@ -59,7 +57,6 @@ const MemorializeButton = ({ user }: Props) => {
               </div>
             </Button>
           </Link>
-          <Separator orientation="vertical" className="h-10" />
           <Link to={"/select"}>
             <Button className="rounded-md flex bg-0 text-gray-900 hover:bg-gray-200">
               <div className="">
@@ -71,7 +68,7 @@ const MemorializeButton = ({ user }: Props) => {
       ) : (
         <Link to={"/select"}>
           <Button className="w-30 h-full bg-0 rounded-md flex text-gray-900 hover:bg-gray-200">
-            M
+            Memorialze Someone
           </Button>
         </Link>
       )}

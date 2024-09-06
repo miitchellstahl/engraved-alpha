@@ -1,19 +1,19 @@
 import { UserContext } from "@/UserContext";
 import { useContext } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const { isLoading, isLoggedIn } = useContext(UserContext);
+  const { isValidatingToken, isLoggedIn } = useContext(UserContext);
 
-  if (isLoading) {
+  if (isValidatingToken) {
     return null;
   }
 
-  if (isLoggedIn) {
-    return <Outlet />;
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
   }
 
-  return <Navigate to="/createaccount" replace />;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

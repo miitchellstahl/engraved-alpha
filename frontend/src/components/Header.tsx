@@ -3,22 +3,13 @@ import { Button } from "./ui/button";
 import { UserContext } from "@/UserContext";
 import { useContext } from "react";
 import HeaderMenu from "./HeaderMenu";
-import { useQuery } from "react-query";
-import { getMyUser } from "@/api/MyUserApi";
 import MemorializeButton from "./MemorializeButton";
 import NotificationDropdown from "./NotificationDropdown";
+import MemorializeDropdown from "./MemorializeDropdown";
+import { Separator } from "./ui/separator";
 
 const Header = () => {
   const { isLoggedIn } = useContext(UserContext);
-  const { data: user, isLoading: isLoadingUser } = useQuery(
-    "getUser",
-    getMyUser,
-    {
-      retry: false,
-    }
-  );
-
-  console.log(user);
 
   return (
     <header className="flex flex-col gap-2 2xl:container px-6 py-3">
@@ -42,9 +33,15 @@ const Header = () => {
 
         {isLoggedIn ? (
           <div className="flex gap-2">
-            <MemorializeButton user={user} />
+            <div className="hidden sm:block">
+              <MemorializeButton />
+            </div>
+            <div className="block sm:hidden">
+              <MemorializeDropdown />
+            </div>
             <NotificationDropdown />
-            <HeaderMenu user={user} isLoadingUser={isLoadingUser} />
+            <Separator orientation="vertical" className="h-10" />
+            <HeaderMenu />
           </div>
         ) : (
           <Link to={"/login"}>
