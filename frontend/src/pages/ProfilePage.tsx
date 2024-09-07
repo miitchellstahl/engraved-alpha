@@ -1,4 +1,3 @@
-import { getMyUser } from "@/api/MyUserApi";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import EditProfileForm from "@/forms/Edit Profile Form/EditProfileForm";
@@ -12,6 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import LoadingDeceasedUserCard from "@/components/LoadingDeceasedUserCard";
 import { Helmet } from "react-helmet";
 import Logo from "@/assets/IconLogo.svg";
+import { useContext } from "react";
+import { UserContext } from "@/UserContext";
 
 interface OnboardingUser {
   _id: string;
@@ -21,11 +22,9 @@ interface OnboardingUser {
 
 const ProfilePage = () => {
   const queryClient = useQueryClient();
-  const { data: user, isLoading: isUserLoading } = useQuery(
-    "getUser",
-    getMyUser,
-    {}
-  );
+
+  const { user, isLoadingUser } = useContext(UserContext);
+
   const { data: deceasedUsers, isLoading: isDeceasedUserLoading } = useQuery(
     "getDeceasedUsers",
     getMyDeceasedUsers,
@@ -62,7 +61,7 @@ const ProfilePage = () => {
           alt=""
           draggable="false"
         />
-        {isUserLoading ? (
+        {isLoadingUser ? (
           <div className="flex flex-col gap-1">
             <Skeleton className="w-[250px] h-4" />
             <Skeleton className="w-[250px] h-4" />
@@ -126,11 +125,7 @@ const ProfilePage = () => {
           </TabsContent>
           <TabsContent value="edit-profile">
             <Separator className="my-2" />
-            <EditProfileForm
-              user={user}
-              onSave={updateUser}
-              isLoading={isUpdateLoading}
-            />
+            <EditProfileForm onSave={updateUser} isLoading={isUpdateLoading} />
           </TabsContent>
         </Tabs>
       </div>

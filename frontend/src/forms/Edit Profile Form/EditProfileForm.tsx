@@ -11,14 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { User } from "@/types";
+import { UserContext } from "@/UserContext";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 type Props = {
-  user?: User;
   onSave: (EditFormData: FormData) => void;
   isLoading: boolean;
 };
@@ -34,7 +33,8 @@ const formSchema = z.object({
 
 type EditFormData = z.infer<typeof formSchema>;
 
-const EditProfileForm = ({ user, onSave, isLoading }: Props) => {
+const EditProfileForm = ({ onSave, isLoading }: Props) => {
+  const { user } = useContext(UserContext);
   const form = useForm<EditFormData>({
     resolver: zodResolver(formSchema),
   });
@@ -129,7 +129,11 @@ const EditProfileForm = ({ user, onSave, isLoading }: Props) => {
             </FormItem>
           )}
         />
-        {isLoading ? <LoadingButton /> : <Button>Save Profile</Button>}
+        {isLoading ? (
+          <LoadingButton>Saving</LoadingButton>
+        ) : (
+          <Button>Save Profile</Button>
+        )}
       </form>
     </Form>
   );
