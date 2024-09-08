@@ -45,6 +45,7 @@ const LoginPage = () => {
   const onSubmit = async (formData: LoginForm) => {
     await loginUser(formData);
     await queryClient.invalidateQueries("validateToken");
+    await queryClient.invalidateQueries("getUser");
     setRedirect(true);
   };
 

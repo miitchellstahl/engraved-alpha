@@ -17,10 +17,11 @@ const PinnedDeceasedUserCard = ({
   isLoading,
 }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const previewContent = content.slice(0, 485);
+  const previewContent = content?.slice(0, 485);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
+
   return (
     <Card className="p-5 space-y-4 shadow-sm flex flex-col">
       <CardHeader className="flex flex-row gap-3 p-0 justify-start items-start space-y-0">
@@ -38,15 +39,17 @@ const PinnedDeceasedUserCard = ({
       </CardHeader>
       <Separator />
       <div className="content whitespace-pre-wrap break-words">
-        {isExpanded ? content + " " : previewContent + "... "}
-        {content.length > 485 && (
-          <span
-            onClick={toggleExpand}
-            className="text-gray-700 underline text-md cursor-pointer"
-          >
-            {isExpanded ? "Show less" : "Read more"}
-          </span>
-        )}
+        <div className="">
+          {isExpanded ? content + " " : previewContent + "... "}
+          {content?.length > 485 && (
+            <span
+              onClick={toggleExpand}
+              className="text-gray-700 underline text-md cursor-pointer"
+            >
+              {isExpanded ? "Show less" : "Read more"}
+            </span>
+          )}
+        </div>
       </div>
     </Card>
   );

@@ -35,7 +35,6 @@ export function UserContextProvider({ children }: Props) {
     "validateToken",
     validateToken,
     {
-      retry: false,
       onSuccess: (data) => {
         setIsLoggedIn(true);
         setUserId(data?.userId || "");

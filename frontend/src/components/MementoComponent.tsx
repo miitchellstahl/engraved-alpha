@@ -1,16 +1,18 @@
 import { Clock, MapPinIcon } from "lucide-react";
 import { Card, CardContent, CardFooter } from "./ui/card";
+import { Link } from "react-router-dom";
 
 type Props = {
   type: string;
   content: string;
-  date: Date;
+  date: string;
   petName?: string;
-  author: string;
+  title: string;
   albumTitle?: string;
   location?: string;
   placeName?: string;
   petType?: string;
+  place?: string;
 };
 
 const MementoComponent = ({
@@ -18,11 +20,12 @@ const MementoComponent = ({
   content,
   date,
   petName,
-  author,
+  title,
   albumTitle,
   placeName,
   location,
   petType,
+  place,
 }: Props) => {
   const convertedDate = new Date(date);
   const year = convertedDate.getFullYear();
@@ -36,10 +39,10 @@ const MementoComponent = ({
             <CardFooter className="p-3">
               <div className="flex justify-between items-center w-full">
                 <h3 className="text-sm font-bold text-gray-900 font-bold">
-                  {petName}
+                  {title}
                 </h3>
                 <h3 className="text-xs font-light text-gray-500 font-light">
-                  {petType}
+                  {content}
                 </h3>
               </div>
             </CardFooter>
@@ -53,7 +56,7 @@ const MementoComponent = ({
             <CardFooter className="p-3">
               <div className="flex justify-between items-center w-full">
                 <h3 className="text-sm font-bold text-gray-900 font-bold">
-                  {albumTitle}
+                  {title}
                 </h3>
                 <div className="date flex gap-1 items-center">
                   <Clock size={15} className="text-gray-500" />
@@ -87,7 +90,7 @@ const MementoComponent = ({
             <CardFooter className="p-3 pt-0">
               <div className="flex justify-between items-center w-full">
                 <h3 className="text-sm font-bold text-gray-900 font-bold">
-                  {author}
+                  {title}
                 </h3>
                 <div className="location flex gap-1 items-center">
                   <h3 className="text-xs font-light text-gray-500 font-light text-right">
@@ -114,7 +117,13 @@ const MementoComponent = ({
             <CardFooter className="p-3 pt-0">
               <div className="flex justify-between items-center w-full">
                 <h3 className="text-sm font-bold text-gray-900 font-bold">
-                  {author}
+                  {placeName ? (
+                    <Link to={`places`} className="underline">
+                      associated with {placeName}
+                    </Link>
+                  ) : (
+                    title
+                  )}
                 </h3>
                 <div className="location flex gap-1 items-center">
                   <h3 className="text-xs font-light text-gray-500 font-light">
@@ -141,7 +150,7 @@ const MementoComponent = ({
             <CardFooter className="p-3 pt-0">
               <div className="flex justify-between items-center w-full">
                 <h3 className="text-sm font-bold text-gray-900 font-bold">
-                  {placeName}
+                  {title}
                 </h3>
                 <h3 className="text-xs font-light text-gray-500 font-light">
                   {type}

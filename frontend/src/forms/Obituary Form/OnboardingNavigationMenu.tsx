@@ -36,10 +36,10 @@ const OnboardingNavigationMenu = ({
           />
         )}
         <span>Eulogies:</span>
-        {[...eulogyFields].reverse().map((fields, index) => (
+        {[...eulogyFields].reverse().map((field, index) => (
           <InProgressNavigationButton
             IconComponent={BookOpen}
-            key={index}
+            key={field.id}
             buttonText={`Eulogy ${index}`}
           />
         ))}

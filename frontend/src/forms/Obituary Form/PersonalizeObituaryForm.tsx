@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FileInput from "@/components/FileInput";
-import EulogySection from "./EulogySection";
+import EulogySection from "./OnboardingNavigationMenu";
 
 type Props = {
   onSave: (formData: FormData) => void;
@@ -48,22 +48,21 @@ const PersonalizeObituaryForm = forwardRef<PersonalizeFormRef, Props>(
     return (
       <Form {...form}>
         <form
-          className="space-y-6"
+          className="space-y-6  shadow-base"
           onSubmit={form.handleSubmit(onSubmit)}
           autoComplete="new-password"
         >
-          <div className="">
+          <div className="bg-white p-6 px-12 rounded-md">
             {" "}
             <h2 className="font-bold text-xl">Personalize</h2>
             <FormDescription>
               Add some photos of {initialData?.firstName} to get their profile
               started
             </FormDescription>
+            {/* File Input */}
+            <FileInput singlePhoto={false} />
           </div>
-          {/* File Input */}
-          <FileInput singlePhoto={false} />
-          <EulogySection />
-          <EulogySection />
+          <div className="bg-white p-6 px-12 rounded-md">flk</div>
         </form>
       </Form>
     );

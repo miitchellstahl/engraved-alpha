@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Album } from "@/types";
 import { Skeleton } from "./ui/skeleton";
 import { Separator } from "./ui/separator";
-import PhotoComponent from "./PhotoComponent";
+import Post from "./PostComponents/Post";
 
 type Props = {
   album: Album;
@@ -71,17 +71,12 @@ const AlbumPreview = ({ album, isLoading }: Props) => {
 
           <CardContent className="p-0">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 group-hover:opacity-75">
-              {album.photos?.slice(0, 3).map((photo) => (
-                <PhotoComponent
+              {album.photos?.slice(0, 3).map((photo: any) => (
+                <Post
                   isFeed={true}
                   key={photo._id}
-                  imageUrl={photo.photoUrl}
-                  albumId={photo?.albumId}
+                  postData={photo}
                   showMemento={false}
-                  content={photo.content}
-                  type={photo.type}
-                  date={photo.date}
-                  author={photo.author}
                 />
               ))}
             </div>

@@ -8,7 +8,7 @@ const LoadingWallWeatherCard = () => {
     <Card className="rounded-b-none opacity-70 shadow-md">
       <CardHeader className="p-3">
         {" "}
-        <Badge className="flex gap-2 rounded-md w-fit bg-indigo-900">
+        <Badge className="flex gap-2 rounded-md w-fit bg-gray-100">
           <Cloud size={20} />
           <Skeleton className="h-[12px] w-[100px] rounded-sm" />
         </Badge>

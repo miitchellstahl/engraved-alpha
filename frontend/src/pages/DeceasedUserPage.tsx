@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { Edit, MapPinIcon } from "lucide-react";
 import DeceasedUserButtonHeader from "@/components/DeceasedUserButtonHeader";
 import { Separator } from "@/components/ui/separator";
-import PhotoComponent from "@/components/PhotoComponent";
+import Post from "@/components/PostComponents/Post";
 import LoadingHeaderButton from "@/components/LoadingHeaderButton";
 import MementoComponent from "@/components/MementoComponent";
 import FeedSection from "@/components/FeedSection";
@@ -353,14 +353,12 @@ const DeceasedUserPage = () => {
                 {deceasedUser?.photos.length > 0 && (
                   <FeedSection
                     content={deceasedUser?.photos}
-                    contentType="Photos"
                     firstName={deceasedUser?.firstName}
                   />
                 )}
                 {deceasedUser?.pets.length > 0 && (
                   <FeedSection
                     content={deceasedUser?.pets}
-                    contentType="Pets"
                     firstName={deceasedUser?.firstName}
                   />
                 )}
@@ -368,7 +366,6 @@ const DeceasedUserPage = () => {
                 {deceasedUser?.places.length > 0 && (
                   <FeedSection
                     content={deceasedUser?.places}
-                    contentType="Places"
                     firstName={deceasedUser?.firstName}
                   />
                 )}
@@ -450,87 +447,14 @@ MAKE CUSTOM MAP LOADNIG COMPONENT */}
               {isWallViewLoading ? (
                 <Skeleton className="h-12 w-full" />
               ) : (
-                wallViewContent?.map((content: any) => {
-                  if (content.type === "Photo") {
-                    return (
-                      <PhotoComponent
-                        isFeed={false}
-                        key={content._id}
-                        imageUrl={content.photoUrl}
-                        albumId={content?.albumId}
-                        showMemento={true}
-                        content={content.content}
-                        type={content.type}
-                        date={content.date}
-                        author={content.author}
-                        albumTitle={content?.albumTitle}
-                        location={content?.location}
-                      />
-                    );
-                  }
-                  if (content.type === "Photo Album") {
-                    return (
-                      <PhotoComponent
-                        isFeed={false}
-                        key={content._id}
-                        imageUrl={content.photoUrl}
-                        albumId={content?.albumId}
-                        showMemento={true}
-                        content={content.content}
-                        type={content.type}
-                        date={content.date}
-                        author={content.author}
-                        albumTitle={content?.albumTitle}
-                        location={content?.location}
-                      />
-                    );
-                  }
-                  if (content.type === "Memento") {
-                    return (
-                      <MementoComponent
-                        key={content._id}
-                        author={content.author}
-                        content={content.content}
-                        type={content.type}
-                        location={content?.location}
-                        date={content.createdAt}
-                      />
-                    );
-                  }
-                  if (content.type === "Pet") {
-                    return (
-                      <PhotoComponent
-                        isFeed={false}
-                        key={content._id}
-                        type={content.type}
-                        petName={content.petName}
-                        petType={content.petType}
-                        imageUrl={content.photoUrl}
-                        content={content.content || ""}
-                        date={content.date || new Date().toISOString()}
-                        author={content.author || ""}
-                      />
-                    );
-                  }
-                  if (content.type === "Place") {
-                    return (
-                      <PhotoComponent
-                        isFeed={false}
-                        key={content._id}
-                        placeLongitude={content.placeLongitude}
-                        placeLatitude={content.placeLatitude}
-                        type={content.type}
-                        showMemento={true}
-                        author={content.author}
-                        content={content.content}
-                        date={content.date}
-                        placeName={content.placeName}
-                        imageUrl={content.photoUrl} // Added this line
-                      />
-                    );
-                  }
-                  return null;
-                })
+                wallViewContent?.map((content: any) => (
+                  <Post
+                    isFeed={false}
+                    key={content._id}
+                    postData={content}
+                    showMemento={true}
+                  />
+                ))
               )}
               {/* Pagination buttons */}
             </div>

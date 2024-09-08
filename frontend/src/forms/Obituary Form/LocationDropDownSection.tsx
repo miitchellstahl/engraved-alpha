@@ -7,12 +7,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { FormField, FormItem, FormLabel } from "@/components/ui/form";
 import {
   Popover,
   PopoverContent,
@@ -20,6 +15,7 @@ import {
 } from "@radix-ui/react-popover";
 import { City, State } from "country-state-city";
 import React from "react";
+import { cn } from "@/lib/utils";
 
 import { useFormContext } from "react-hook-form";
 
@@ -67,16 +63,21 @@ const LocationDropDownSection = () => {
 
   return (
     <div className="flex gap-6">
-      {" "}
       <FormField
         control={control}
         name="stateBorn"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <FormItem className="flex w-full flex-col flex-1">
             <FormLabel>State Born</FormLabel>
             <Popover open={openState} onOpenChange={setOpenState}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start">
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start",
+                    fieldState.error && "border-red-500"
+                  )}
+                >
                   {field.value ? <>{field.value}</> : <>Select State Born</>}
                 </Button>
               </PopoverTrigger>
@@ -105,19 +106,24 @@ const LocationDropDownSection = () => {
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage />
           </FormItem>
         )}
       />
       <FormField
         control={control}
         name="cityBorn"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <FormItem className="flex w-full flex-col flex-1">
             <FormLabel>City Born</FormLabel>
             <Popover open={openCity} onOpenChange={setOpenCity}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start">
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start",
+                    fieldState.error && "border-red-500"
+                  )}
+                >
                   {field.value ? <>{field.value}</> : <>Select City Born</>}
                 </Button>
               </PopoverTrigger>
@@ -146,19 +152,24 @@ const LocationDropDownSection = () => {
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage />
           </FormItem>
         )}
       />
       <FormField
         control={control}
         name="stateDied"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <FormItem className="flex w-full flex-col flex-1">
             <FormLabel>State Died</FormLabel>
             <Popover open={openStateDied} onOpenChange={setOpenStateDied}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start">
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start",
+                    fieldState.error && "border-red-500"
+                  )}
+                >
                   {field.value ? <>{field.value}</> : <>Select State Died</>}
                 </Button>
               </PopoverTrigger>
@@ -187,19 +198,24 @@ const LocationDropDownSection = () => {
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage />
           </FormItem>
         )}
       />
       <FormField
         control={control}
         name="cityDied"
-        render={({ field }) => (
+        render={({ field, fieldState }) => (
           <FormItem className="flex w-full flex-col flex-1">
             <FormLabel>City Died</FormLabel>
             <Popover open={openCityDied} onOpenChange={setOpenCityDied}>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-start">
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start",
+                    fieldState.error && "border-red-500"
+                  )}
+                >
                   {field.value ? <>{field.value}</> : <>Select City Died</>}
                 </Button>
               </PopoverTrigger>
@@ -228,7 +244,6 @@ const LocationDropDownSection = () => {
                 </Command>
               </PopoverContent>
             </Popover>
-            <FormMessage />
           </FormItem>
         )}
       />

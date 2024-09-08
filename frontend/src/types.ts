@@ -9,13 +9,6 @@ export interface User {
   onboardingUsers: any;
 }
 
-// export type eulogy = {
-//   _id: string;
-//   eulogySpeech: string;
-//   eulogyAuthor: string;
-//   eulogyProfilePhotoUrl: string;
-// };
-
 // DeceasedUser.ts
 export interface EulogyItem {
   _id: string;
@@ -84,35 +77,6 @@ export interface Photo {
   createdAt: Date;
 }
 
-// export type PhotoPost = {
-//   _id: string;
-//   photoUrl: string;
-//   content: string;
-//   date: Date;
-//   type: string;
-//   author: string;
-//   albumId: string;
-//   albumTitle: string;
-//   location: string;
-//   place: string;
-// };
-// export type MementoPost = {
-//   _id: string;
-//   location: string;
-//   createdAt: Date;
-//   content: string;
-//   author: string;
-//   type: string;
-// };
-
-// export type Album = {
-//   _id: string;
-//   title: string;
-//   albumDate: string;
-//   deceasedUser: string;
-//   photos: PhotoPost[];
-// };
-
 export interface Place {
   _id: string;
   placeLongitude: number;
@@ -140,4 +104,47 @@ export interface OnboardingData {
   onboardingId: string;
   formData: Record<string, any>;
   currentStep: number;
+}
+
+// Define common properties for all post types
+interface BasePostData {
+  _id: string;
+  type: string;
+  photoUrl: string;
+  content: string;
+  date: string;
+  author: string;
+}
+
+export interface PetPostData extends BasePostData {
+  petName: string;
+  petType: string;
+}
+
+export interface PlacePostData extends BasePostData {
+  placeName: string;
+  mapImageUrl?: string;
+  placeLatitude?: number;
+  placeLongitude?: number;
+}
+
+export interface PhotoPostData extends BasePostData {
+  placeName?: string;
+}
+
+export interface AlbumPostData extends BasePostData {
+  albumTitle: string;
+  albumId: string;
+}
+
+export type PostData =
+  | PetPostData
+  | PlacePostData
+  | PhotoPostData
+  | AlbumPostData;
+
+export interface PostComponentProps {
+  postData: PostData;
+  showMemento?: boolean;
+  isFeed?: boolean;
 }

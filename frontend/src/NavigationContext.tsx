@@ -9,6 +9,7 @@ interface NavigationContextProps {
   goToNextPage: () => void;
   goToPreviousPage: () => void;
   pages: { name: string; path: string }[];
+  deceasedUserCount: number;
 }
 
 const NavigationContext = createContext<NavigationContextProps>({
@@ -16,6 +17,7 @@ const NavigationContext = createContext<NavigationContextProps>({
   goToNextPage: () => {},
   goToPreviousPage: () => {},
   pages: [],
+  deceasedUserCount: 0,
 });
 
 type Props = {
@@ -91,7 +93,13 @@ export const NavigationProvider = ({ children }: Props) => {
 
   return (
     <NavigationContext.Provider
-      value={{ currentPage, goToNextPage, goToPreviousPage, pages }}
+      value={{
+        currentPage,
+        goToNextPage,
+        goToPreviousPage,
+        pages,
+        deceasedUserCount,
+      }}
     >
       {children}
     </NavigationContext.Provider>

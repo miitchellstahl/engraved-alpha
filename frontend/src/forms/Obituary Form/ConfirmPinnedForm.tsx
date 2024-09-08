@@ -1,29 +1,17 @@
 import { forwardRef, useImperativeHandle } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormField, FormItem } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import { InfoIcon } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+
 import { DeceasedUser } from "@/types";
 import { useEffect } from "react";
-import EulogySection from "./EulogySection";
+import OnboardingNavigationMenu from "./OnboardingNavigationMenu";
 import { Separator } from "@/components/ui/separator";
+import PinnedDeceasedUserCard from "@/components/PinnedDeceasedUserCard";
+import EulogyItemInput from "./EulogyItemInput";
+import LoadingPinnedDeceasedUserCard from "@/components/LoadingPinnedDeceasedUserCard";
+import EditingPinnedDeceasedUserCard from "@/components/EditingPinnedDeceasedUserCard";
 
 type Props = {
   onSave: (formData: FormData) => void;
@@ -60,6 +48,15 @@ const ConfirmPinnedForm = forwardRef<ConfirmPinnedFormRef, Props>(
         obituary: initialData?.obituary || "",
         eulogies: initialData?.eulogies || [],
       },
+    });
+
+    const {
+      fields: eulogyFields,
+      append: appendEulogy,
+      remove: removeEulogy,
+    } = useFieldArray({
+      control: form.control,
+      name: "eulogies",
     });
 
     useImperativeHandle(ref, () => ({
@@ -112,45 +109,82 @@ const ConfirmPinnedForm = forwardRef<ConfirmPinnedFormRef, Props>(
     };
     return (
       <Form {...form}>
-        <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="">
-            {" "}
-            <h2>Basic Info</h2>
-            <FormDescription>
-              Now that the obituary has been generated, edit it as you wish, add
-              more sections if you'd like
-            </FormDescription>
-          </div>
-          <FormField
-            control={form.control}
-            name="obituary"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <div className="flex gap-2 items-center justify-between">
-                  <FormLabel>Obituary</FormLabel>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button variant="outline" className="p-2" type="button">
-                          <InfoIcon size={20} className="text-gray-400" />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Change the obituary however you'd like to</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-                <FormControl>
-                  <Textarea className="overflow-hidden h-[300px]" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form className="w-full" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="flex justify-center lg:flex-row gap-6 ">
+            {/* <div className="space-y-6 h-fit bg-white p-4 lg:p-6 lg:px-12 rounded-md shadow-base flex-1 onboarding-nav sticky top-[100px]">
+              <h2 className="text-3xl font-semibold">To do</h2>
+              <OnboardingNavigationMenu
+                appendEulogy={appendEulogy}
+                eulogyFields={eulogyFields}
+                initialData={initialData}
+              />
+            </div> */}
 
-          <Separator />
-          <EulogySection />
+            <div className="space-y-6 rounded-md shadow-base w-[800px]">
+              <FormField
+                control={form.control}
+                name="obituary"
+                render={() => (
+                  <FormItem className="flex flex-col gap-2">
+                    <EditingPinnedDeceasedUserCard
+                      profilePhoto={initialData?.profilePhotoUrl || ""}
+                      title={`${initialData?.firstName}'s Obituary` || ""}
+                      isLoading={false}
+                      name="obituary"
+                    />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="eulogies"
+                render={() => (
+                  <FormItem className="flex flex-col gap-2">
+                    {eulogyFields.map((field, index) => (
+                      <EditingPinnedDeceasedUserCard
+                        key={field.id}
+                        profilePhoto={initialData?.profilePhotoUrl || ""}
+                        title={`${initialData?.firstName}'s Obituary` || ""}
+                        isLoading={false}
+                        name="eulogies"
+                        index={index}
+                      />
+                    ))}
+                  </FormItem>
+                )}
+              />
+              <div
+                className="hover:opacity-70 cursor-pointer"
+                onClick={() =>
+                  appendEulogy({
+                    eulogySpeech: "",
+                    eulogyAuthor: "",
+                    eulogyAuthorPhoto: undefined,
+                  })
+                }
+              >
+                <LoadingPinnedDeceasedUserCard />
+              </div>
+              {/* <FormField
+                control={form.control}
+                name="eulogies"
+                render={() => (
+                  <FormItem className="flex flex-col gap-2">
+                    {[...eulogyFields].reverse().map((field, index) => (
+                      <EulogyItemInput
+                        key={field.id}
+                        index={eulogyFields.length - 1 - index}
+                        removeEulogyItem={() => {
+                          removeEulogy(eulogyFields.length - 1 - index);
+                        }}
+                      />
+                    ))}
+                  </FormItem>
+                )}
+              /> */}
+            </div>
+          </div>
         </form>
       </Form>
     );

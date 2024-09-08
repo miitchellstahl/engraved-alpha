@@ -9,7 +9,6 @@ const Layout = () => {
       <div className="flex-grow">
         <Outlet />
       </div>
-
       <Footer />
     </div>
   );

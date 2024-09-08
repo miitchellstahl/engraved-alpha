@@ -1,11 +1,18 @@
 import AlbumPreview from "@/components/AlbumPreview";
 import MementoComponent from "@/components/MementoComponent";
-import PhotoComponent from "@/components/PhotoComponent";
+import Post from "@/components/PostComponents/Post";
 import PlacesPageMapComponent from "@/components/PlacesPageMapComponent";
 import TabNavigation from "@/components/TabNavigation";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Album, Memento, Photo, Place } from "@/types";
+import {
+  Album,
+  AlbumPostData,
+  Memento,
+  PetPostData,
+  PhotoPostData,
+  Place,
+} from "@/types";
 import { FunctionComponent, useEffect, useState } from "react";
 import { useInfiniteQuery } from "react-query";
 import { Link, useLocation, useParams } from "react-router-dom";
@@ -293,16 +300,11 @@ const DeceasedUserTabPage: FunctionComponent<DeceasedUserTabPageProps> = ({
               <Masonry gutter="1.5rem">
                 {data?.pages
                   .flatMap((page) => page.photos)
-                  .map((photo: Photo) => (
-                    <PhotoComponent
+                  .map((photo: PhotoPostData) => (
+                    <Post
                       key={photo._id}
-                      imageUrl={photo.photoUrl}
+                      postData={photo}
                       isFeed={false}
-                      content={photo.content}
-                      type={photo.type}
-                      date={photo.date}
-                      author={photo.author}
-                      albumTitle={photo?.albumTitle}
                       showMemento={false}
                     />
                   ))}
@@ -324,16 +326,11 @@ const DeceasedUserTabPage: FunctionComponent<DeceasedUserTabPageProps> = ({
               <Masonry gutter="1.5rem">
                 {data?.pages
                   .flatMap((page) => page?.album?.photos)
-                  .map((photo: Photo) => (
-                    <PhotoComponent
+                  .map((photo: AlbumPostData) => (
+                    <Post
                       key={photo._id}
-                      imageUrl={photo?.photoUrl}
+                      postData={photo}
                       isFeed={false}
-                      content={photo.content}
-                      type={photo.type}
-                      date={photo.date}
-                      author={photo.author}
-                      albumTitle={photo?.albumTitle}
                       showMemento={false}
                     />
                   ))}
@@ -382,15 +379,11 @@ const DeceasedUserTabPage: FunctionComponent<DeceasedUserTabPageProps> = ({
               <Masonry gutter="1.5rem">
                 {data?.pages
                   .flatMap((page) => page.pets)
-                  .map((photo: Photo) => (
-                    <PhotoComponent
+                  .map((photo: PetPostData) => (
+                    <Post
                       key={photo._id}
-                      imageUrl={photo.photoUrl}
+                      postData={photo}
                       isFeed={false}
-                      content={photo.content}
-                      type={photo.type}
-                      date={photo.date}
-                      author={photo.author}
                       showMemento={false}
                     />
                   ))}

@@ -62,7 +62,7 @@ const PlacesPageMapComponent = ({ places, selectedPlace }: Props) => {
     <div
       className={`${
         selectedPlace?.photos.length > 0 ? " grid grid-cols-[3fr_6fr]" : ""
-      } gap-4 h-[400px]`}
+      } gap-4 h-[80vh]`}
     >
       {selectedPlace?.photos.length > 0 && (
         <div className="photo-place-component h-full w-full">
@@ -103,7 +103,9 @@ const PlacesPageMapComponent = ({ places, selectedPlace }: Props) => {
                 </Badge>
                 <img
                   src={places?.deceasedUser?.profilePhotoUrl}
-                  className="w-[48px] h-[48px] object-cover object-left rounded-md border-4 border-indigo-900 shadow-md"
+                  width={48}
+                  height={48}
+                  className="w-[48px] h-[48px] object-cover rounded-md border-4 border-indigo-900 shadow-md"
                 />
               </AdvancedMarker>
             ))}

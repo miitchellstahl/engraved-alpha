@@ -7,7 +7,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -144,389 +143,445 @@ const CreateObituaryForm = forwardRef<CreateObituaryFormRef, Props>(
     return (
       <Form {...form}>
         <form
-          className="space-y-6"
+          className="w-full"
           onSubmit={form.handleSubmit(onSubmit)}
           autoComplete="new-password"
         >
-          <div className="">
-            <h2 className="text-xl font-bold">
-              Let's create an obituary together
-            </h2>
-            <FormDescription className="text-gray-700">
-              Please tell us about the individual, and we will generate an
-              obituary for you.
-            </FormDescription>
-          </div>
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="space-y-6 h-fit bg-white p-4 lg:p-6 lg:px-12 rounded-md shadow-base flex-1">
+              <div className="">
+                <h2 className="text-3xl font-semibold">
+                  Who are we memorializing?
+                </h2>
+              </div>
 
-          <div className="flex gap-6">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>First name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Name"
-                      {...field}
-                      autoComplete="new-password"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem className="flex-1">
-                  <FormLabel>Last name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Name"
-                      {...field}
-                      autoComplete="new-password"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <FormField
-            control={form.control}
-            name="userRelation"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Relation</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
+              <div className="flex flex-col sm:flex-row gap-6">
+                <FormField
+                  control={form.control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>First name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Name"
+                          {...field}
+                          autoComplete="new-password"
+                          className={cn(
+                            form.formState.errors.firstName && "border-red-500"
+                          )}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel>Last name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Name"
+                          {...field}
+                          autoComplete="new-password"
+                          className={cn(
+                            form.formState.errors.lastName && "border-red-500"
+                          )}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="userRelation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Relation</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger
+                          className={cn(
+                            form.formState.errors.userRelation &&
+                              "border-red-500"
+                          )}
+                        >
+                          <SelectValue placeholder="Select your relation" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {relations.map((relation) => (
+                          <SelectItem key={relation} value={relation}>
+                            {relation}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <div className="flex flex-col sm:flex-row gap-6 items-start">
+                <FormField
+                  control={form.control}
+                  name="birthDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel>Birth Date</FormLabel>
+                      <Popover
+                        open={birthDateOpen}
+                        onOpenChange={setBirthDateOpen}
+                      >
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full font-normal",
+                                !field.value && "text-muted-foreground",
+                                form.formState.errors.birthDate &&
+                                  "border-red-500"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className={cn("w-auto p-0")}
+                          align="start"
+                        >
+                          <Calendar
+                            mode="single"
+                            captionLayout="dropdown"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            fromYear={1800}
+                            toYear={new Date().getFullYear()}
+                            onDayClick={() => setBirthDateOpen(false)}
+                            disabled={(date) => date > new Date()}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>
+                        It's okay if you have to estimate
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="deathDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col w-full">
+                      <FormLabel>Death Date</FormLabel>
+                      <Popover
+                        open={deathDateOpen}
+                        onOpenChange={setDeathDateOpen}
+                      >
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full font-normal",
+                                !field.value && "text-muted-foreground",
+                                form.formState.errors.deathDate &&
+                                  "border-red-500"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          className={cn("w-auto p-0")}
+                          align="start"
+                        >
+                          <Calendar
+                            mode="single"
+                            captionLayout="dropdown"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            fromYear={1800}
+                            toYear={new Date().getFullYear()}
+                            onDayClick={() => setDeathDateOpen(false)}
+                            disabled={(date) => date > new Date()}
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>
+                        It's okay if you have to estimate
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <LocationDropDownSection />
+            </div>
+            <div className="space-y-6 rounded-md shadow-base flex-1">
+              <div className="h-40 w-full">
+                <FileInput name="profilePhoto" />
+              </div>
+              <h2 className="text-md">
+                This will help us personalize your obituary
+              </h2>
+              <Accordion type="single" collapsible className="w-full ">
+                <AccordionItem
+                  value="item-1"
+                  className="bg-indigo-100 rounded-md"
                 >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your relation" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {relations.map((relation) => (
-                      <SelectItem key={relation} value={relation}>
-                        {relation}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex gap-6 items-start">
-            <FormField
-              control={form.control}
-              name="birthDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <FormLabel>Birth Date</FormLabel>
-                  <Popover open={birthDateOpen} onOpenChange={setBirthDateOpen}>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        captionLayout="dropdown"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        fromYear={1800}
-                        toYear={new Date().getFullYear()}
-                        onDayClick={() => setBirthDateOpen(false)}
-                        disabled={(date) => date > new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    It's okay if you have to estimate
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="deathDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col w-full">
-                  <FormLabel>Death Date</FormLabel>
-                  <Popover open={deathDateOpen} onOpenChange={setDeathDateOpen}>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        captionLayout="dropdown"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        fromYear={1800}
-                        toYear={new Date().getFullYear()}
-                        onDayClick={() => setDeathDateOpen(false)}
-                        disabled={(date) => date > new Date()}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormDescription>
-                    It's okay if you have to estimate
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
+                    <div className="flex gap-2 items-center">
+                      <UsersRound size={18} className="text-indigo-900" />
+                      <span className="text-indigo-900">Family</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-6 flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name="survivors"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <div className="flex gap-2 items-center justify-between">
+                            <FormLabel>Surviving family members</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Button variant="outline" className="p-2">
+                                    <InfoIcon
+                                      size={20}
+                                      className="text-gray-400"
+                                    />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    Ex: Mike Smith: Brother, Jason Smith: Son
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Provide a name, relationship for each surviving family member."
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="preDeceased"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <div className="flex gap-2 items-center justify-between">
+                            <FormLabel>Predeceased family members</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Button variant="outline" className="p-2">
+                                    <InfoIcon
+                                      size={20}
+                                      className="text-gray-400"
+                                    />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    Ex: Anna Smith: Mother, John Smith: Father
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+
+                          <FormControl>
+                            <Textarea
+                              placeholder="Provide a name, relationship for each predeceased family member."
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
+              <Accordion type="single" collapsible className="w-full ">
+                <AccordionItem
+                  value="item-1"
+                  className="bg-indigo-100 rounded-md"
+                >
+                  <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
+                    <div className="flex gap-2 items-center">
+                      <Book size={18} className="text-indigo-900" />
+                      <span className="text-indigo-900">Education</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-6 flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name="education"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <div className="flex gap-2 items-center justify-between">
+                            <FormLabel>Education</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Button variant="outline" className="p-2">
+                                    <InfoIcon
+                                      size={20}
+                                      className="text-gray-400"
+                                    />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    Ex: High School: Marjory Stoneman Douglas
+                                    High, College: Florida State University
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+
+                          <FormControl>
+                            <Textarea
+                              placeholder="Tell us about their educational background"
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
+              <Accordion type="single" collapsible className="w-full ">
+                <AccordionItem
+                  value="item-1"
+                  className="bg-indigo-100 rounded-md"
+                >
+                  <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
+                    <div className="flex gap-2 items-center">
+                      <HardHat size={18} className="text-indigo-900" />
+                      <span className="text-indigo-900">Career</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-6 flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name="career"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <div className="flex gap-2 items-center justify-between">
+                            <FormLabel>Career</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Button variant="outline" className="p-2">
+                                    <InfoIcon
+                                      size={20}
+                                      className="text-gray-400"
+                                    />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Ex: Software developer</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+
+                          <FormControl>
+                            <Textarea
+                              placeholder="Tell us about their career"
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+
+              <Accordion type="single" collapsible className="w-full ">
+                <AccordionItem
+                  value="item-1"
+                  className="bg-indigo-100 rounded-md"
+                >
+                  <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
+                    <div className="flex gap-2 items-center">
+                      <Palette size={18} className="text-indigo-900" />
+                      <span className="text-indigo-900">Personality</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="p-6 flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name="personality"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <div className="flex gap-2 items-center justify-between">
+                            <FormLabel>What were they like?</FormLabel>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger>
+                                  <Button variant="outline" className="p-2">
+                                    <InfoIcon
+                                      size={20}
+                                      className="text-gray-400"
+                                    />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    Ex: John loved to spend time with his
+                                    grandson and loved the ball game, etc...
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+
+                          <FormControl>
+                            <Textarea
+                              placeholder="Tell us about them"
+                              {...field}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
           </div>
-
-          <LocationDropDownSection />
-
-          <Accordion type="single" collapsible className="w-full ">
-            <AccordionItem value="item-1" className="bg-indigo-100 rounded-md">
-              <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
-                <div className="flex gap-2 items-center">
-                  <UsersRound size={18} className="text-indigo-900" />
-                  <span className="text-indigo-900">Family</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="p-6 flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="survivors"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <div className="flex gap-2 items-center justify-between">
-                        <FormLabel>Surviving family members</FormLabel>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Button variant="outline" className="p-2">
-                                <InfoIcon size={20} className="text-gray-400" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Ex: Mike Smith: Brother, Jason Smith: Son</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Provide a name, relationship for each surviving family member."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="preDeceased"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <div className="flex gap-2 items-center justify-between">
-                        <FormLabel>Predeceased family members</FormLabel>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Button variant="outline" className="p-2">
-                                <InfoIcon size={20} className="text-gray-400" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Ex: Anna Smith: Mother, John Smith: Father</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-
-                      <FormControl>
-                        <Textarea
-                          placeholder="Provide a name, relationship for each predeceased family member."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <Accordion type="single" collapsible className="w-full ">
-            <AccordionItem value="item-1" className="bg-indigo-100 rounded-md">
-              <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
-                <div className="flex gap-2 items-center">
-                  <Book size={18} className="text-indigo-900" />
-                  <span className="text-indigo-900">Education</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="p-6 flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="education"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <div className="flex gap-2 items-center justify-between">
-                        <FormLabel>Education</FormLabel>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Button variant="outline" className="p-2">
-                                <InfoIcon size={20} className="text-gray-400" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>
-                                Ex: High School: Marjory Stoneman Douglas High,
-                                College: Florida State University
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-
-                      <FormControl>
-                        <Textarea
-                          placeholder="Tell us about their educational background"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <Accordion type="single" collapsible className="w-full ">
-            <AccordionItem value="item-1" className="bg-indigo-100 rounded-md">
-              <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
-                <div className="flex gap-2 items-center">
-                  <HardHat size={18} className="text-indigo-900" />
-                  <span className="text-indigo-900">Career</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="p-6 flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="career"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <div className="flex gap-2 items-center justify-between">
-                        <FormLabel>Career</FormLabel>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Button variant="outline" className="p-2">
-                                <InfoIcon size={20} className="text-gray-400" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Ex: Software developer</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-
-                      <FormControl>
-                        <Textarea
-                          placeholder="Tell us about their career"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <Accordion type="single" collapsible className="w-full ">
-            <AccordionItem value="item-1" className="bg-indigo-100 rounded-md">
-              <AccordionTrigger className="flex gap-4 bg-indigo-200 rounded-md px-6">
-                <div className="flex gap-2 items-center">
-                  <Palette size={18} className="text-indigo-900" />
-                  <span className="text-indigo-900">Personality</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="p-6 flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="personality"
-                  render={({ field }) => (
-                    <FormItem className="flex-1">
-                      <div className="flex gap-2 items-center justify-between">
-                        <FormLabel>What were they like?</FormLabel>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Button variant="outline" className="p-2">
-                                <InfoIcon size={20} className="text-gray-400" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>
-                                Ex: John loved to spend time with his grandson
-                                and loved the ball game, etc...
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-
-                      <FormControl>
-                        <Textarea placeholder="Tell us about them" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <FileInput name="profilePhoto" />
         </form>
       </Form>
     );
