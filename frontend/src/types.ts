@@ -110,7 +110,6 @@ export interface OnboardingData {
 interface BasePostData {
   _id: string;
   type: string;
-  photoUrl: string;
   content: string;
   date: string;
   author: string;
@@ -119,6 +118,7 @@ interface BasePostData {
 export interface PetPostData extends BasePostData {
   petName: string;
   petType: string;
+  photoUrl: string;
 }
 
 export interface PlacePostData extends BasePostData {
@@ -130,18 +130,23 @@ export interface PlacePostData extends BasePostData {
 
 export interface PhotoPostData extends BasePostData {
   placeName?: string;
+  photoUrl: string;
 }
 
 export interface AlbumPostData extends BasePostData {
   albumTitle: string;
   albumId: string;
+  photoUrl: string;
 }
+
+export interface MementoPostData extends BasePostData {}
 
 export type PostData =
   | PetPostData
   | PlacePostData
   | PhotoPostData
-  | AlbumPostData;
+  | AlbumPostData
+  | MementoPostData;
 
 export interface PostComponentProps {
   postData: PostData;

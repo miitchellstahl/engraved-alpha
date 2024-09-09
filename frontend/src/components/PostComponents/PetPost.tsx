@@ -5,7 +5,7 @@ import MementoComponent from "../MementoComponent";
 const PetPost = ({ postData, isFeed, showMemento }: PostComponentProps) => {
   const { petName, petType, photoUrl, type, date } = postData as PetPostData;
   return (
-    <>
+    <Card className="rounded-b-none p-0 border-none h-full w-full relative">
       <div>
         {isFeed ? (
           <AspectRatio>
@@ -39,7 +39,7 @@ const PetPost = ({ postData, isFeed, showMemento }: PostComponentProps) => {
           title={petName}
         />
       )}
-    </>
+    </Card>
   );
 };
 

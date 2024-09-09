@@ -4,6 +4,7 @@ import PetPost from "./PetPost";
 import PlacePost from "./PlacePost";
 import PhotoPost from "./PhotoPost";
 import AlbumPost from "./AlbumPost";
+import MementoPost from "./MementoPost";
 
 const PostTypeComponents: Record<
   PostData["type"],
@@ -13,6 +14,7 @@ const PostTypeComponents: Record<
   Place: PlacePost,
   Photo: PhotoPost,
   "Photo Album": AlbumPost,
+  Memento: MementoPost,
 };
 
 const Post = ({ isFeed, postData, showMemento }: PostComponentProps) => {
@@ -30,13 +32,11 @@ const Post = ({ isFeed, postData, showMemento }: PostComponentProps) => {
 
   return (
     <div className={`group cursor-pointer h-fit`}>
-      <Card className="rounded-b-none p-0 border-none h-full w-full relative">
-        <PostTypeComponent
-          postData={postData}
-          isFeed={isFeed}
-          showMemento={showMemento}
-        />
-      </Card>
+      <PostTypeComponent
+        postData={postData}
+        isFeed={isFeed}
+        showMemento={showMemento}
+      />
     </div>
   );
 };

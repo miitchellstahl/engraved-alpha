@@ -11,7 +11,7 @@ const PlacePost = ({ postData, isFeed, showMemento }: PostComponentProps) => {
   const mapImageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${placeLatitude},${placeLongitude}&zoom=16&scale=2&size=600x600&key=${MAP_API_KEY}&map_id=${MAP_ID}&markers=${placeLatitude},${placeLongitude}&style=feature:poi|visibility:off`;
 
   return (
-    <>
+    <Card className="rounded-b-none p-0 border-none h-full w-full relative">
       <div>
         {isFeed ? (
           <AspectRatio>
@@ -45,7 +45,7 @@ const PlacePost = ({ postData, isFeed, showMemento }: PostComponentProps) => {
           title={placeName}
         />
       )}
-    </>
+    </Card>
   );
 };
 

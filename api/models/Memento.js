@@ -6,6 +6,7 @@ const mementoSchema = new mongoose.Schema({
   content: { type: String, required: true },
   author: { type: String, required: true },
   type: { type: String },
+  date: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now },
 });
 

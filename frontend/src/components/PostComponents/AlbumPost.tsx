@@ -1,6 +1,7 @@
 import { AlbumPostData, PostComponentProps } from "@/types";
 import { AspectRatio } from "../ui/aspect-ratio";
 import MementoComponent from "../MementoComponent";
+import { Card } from "../ui/card";
 
 const AlbumPost = ({ postData, isFeed, showMemento }: PostComponentProps) => {
   // Type assertion to ensure postData is AlbumPostData
@@ -8,7 +9,7 @@ const AlbumPost = ({ postData, isFeed, showMemento }: PostComponentProps) => {
     postData as AlbumPostData;
 
   return (
-    <>
+    <Card className="rounded-b-none p-0 border-none h-full w-full relative">
       <div>
         {isFeed ? (
           <AspectRatio>
@@ -42,7 +43,7 @@ const AlbumPost = ({ postData, isFeed, showMemento }: PostComponentProps) => {
           title={albumTitle}
         />
       )}
-    </>
+    </Card>
   );
 };
 
