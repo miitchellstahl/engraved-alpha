@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const eulogyItemSchema = new mongoose.Schema({
   eulogySpeech: { type: String },
   eulogyAuthor: { type: String },
@@ -6,15 +7,11 @@ const eulogyItemSchema = new mongoose.Schema({
 });
 
 const onboardingSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  deceasedUser: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "DeceasedUser",
-  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  // deceasedUser: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "DeceasedUser",
+  // },
   currentStep: {
     type: Number,
     default: 1,

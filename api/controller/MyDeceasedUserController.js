@@ -9,13 +9,14 @@ const openai = new OpenAI();
 
 const getMyDeceasedUsers = async (req, res) => {
   try {
-    const deceasedUsers = await DeceasedUser.find({ user: req.userId }).sort({
-      createdAt: -1,
-    });
-    return res.status(200).json(deceasedUsers);
+    const user = await User.findById(req.userId).populate("deceasedUsers");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json(user);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Failed to get deceased user" });
+    res.status(500).json({ message: "Failed to get deceased users" });
   }
 };
 
@@ -87,6 +88,11 @@ const createDeceasedUser = async (req, res) => {
     }
 
     await deceasedUser.save();
+
+    // Update the User document
+    await User.findByIdAndUpdate(req.userId, {
+      $push: { deceasedUsers: deceasedUser._id },
+    });
 
     return res.status(200).json({ _id: deceasedUser._id });
   } catch (error) {
@@ -386,6 +392,9 @@ const completeOnboarding = async (req, res) => {
 
     await deceasedUser.save();
 
+    // Add the deceasedUser to the user's deceasedUsers array
+    user.deceasedUsers.push(deceasedUser._id);
+
     // Remove the onboarding ID from the user's onboardingUser array
     user.onboardingUsers = user.onboardingUsers.filter(
       (id) => !id.equals(onboarding._id)
@@ -411,11 +420,11 @@ const completeOnboarding = async (req, res) => {
 };
 
 export default {
+  getMyDeceasedUsers,
   createDeceasedUser,
   updateDeceasedUser,
-  getMyDeceasedUsers,
-  completeOnboarding,
-  getOnboardingProgress,
-  saveOnboardingProgress,
   startOnboarding,
+  saveOnboardingProgress,
+  getOnboardingProgress,
+  completeOnboarding,
 };

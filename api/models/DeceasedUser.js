@@ -7,7 +7,12 @@ const eulogyItemSchema = new mongoose.Schema({
 });
 
 const deceasedUserSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  mappedByUser: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   birthDate: { type: Date, required: true },
@@ -25,31 +30,15 @@ const deceasedUserSchema = new mongoose.Schema({
   profilePhotoUrl: { type: String },
   createdAt: { type: Date, default: Date.now },
   userRelation: { type: String, required: true },
-  mappedByUser: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   mappedByRelation: { type: String },
+  photos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Photo" }],
+  mementos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Memento" }],
+  pets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Pet" }],
+  places: [{ type: mongoose.Schema.Types.ObjectId, ref: "Place" }],
+  albums: [{ type: mongoose.Schema.Types.ObjectId, ref: "Album" }],
 });
 
-// Define the virtual field
-deceasedUserSchema.virtual("photos", {
-  ref: "Photo",
-  localField: "_id",
-  foreignField: "deceasedUser",
-});
-deceasedUserSchema.virtual("mementos", {
-  ref: "Memento",
-  localField: "_id",
-  foreignField: "deceasedUser",
-});
-deceasedUserSchema.virtual("pets", {
-  ref: "Pet",
-  localField: "_id",
-  foreignField: "deceasedUser",
-});
-deceasedUserSchema.virtual("places", {
-  ref: "Place",
-  localField: "_id",
-  foreignField: "deceasedUser",
-});
+// Remove the virtual fields
 
 deceasedUserSchema.pre(/^find/, function (next) {
   this.populate({
@@ -65,8 +54,6 @@ deceasedUserSchema.pre(/^find/, function (next) {
 
   next();
 });
-
-//Create a field to auto populate albums
 
 // Ensure virtual fields are included in the output
 deceasedUserSchema.set("toObject", { virtuals: true });

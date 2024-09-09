@@ -11,8 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import LoadingDeceasedUserCard from "@/components/LoadingDeceasedUserCard";
 import { Helmet } from "react-helmet";
 import Logo from "@/assets/IconLogo.svg";
-import { useContext } from "react";
-import { UserContext } from "@/UserContext";
 
 interface OnboardingUser {
   _id: string;
@@ -23,15 +21,13 @@ interface OnboardingUser {
 const ProfilePage = () => {
   const queryClient = useQueryClient();
 
-  const { user, isLoadingUser } = useContext(UserContext);
-
-  const { data: deceasedUsers, isLoading: isDeceasedUserLoading } = useQuery(
+  const { data: user, isLoading: isUserLoading } = useQuery(
     "getDeceasedUsers",
     getMyDeceasedUsers,
     {}
   );
 
-  console.log(deceasedUsers);
+  console.log(user);
 
   const { mutate: updateUser, isLoading: isUpdateLoading } = useMutation(
     updateMyUser,
@@ -61,7 +57,7 @@ const ProfilePage = () => {
           alt=""
           draggable="false"
         />
-        {isLoadingUser ? (
+        {isUserLoading ? (
           <div className="flex flex-col gap-1">
             <Skeleton className="w-[250px] h-4" />
             <Skeleton className="w-[250px] h-4" />
@@ -90,7 +86,7 @@ const ProfilePage = () => {
           <TabsContent value="obituaries">
             <Separator className="my-2" />
             <div className="grid grid-cols-4 gap-6 items-end">
-              {deceasedUsers?.length < 1 &&
+              {user?.deceasedUsers?.length < 1 &&
                 user?.onboardingUsers?.length < 1 && (
                   <div className="cta flex flex-col">
                     <span>No Engraved Profiles - yet!</span>
@@ -110,10 +106,10 @@ const ProfilePage = () => {
                   isUnfinished={true}
                 />
               ))}
-              {isDeceasedUserLoading ? (
+              {isUserLoading ? (
                 <LoadingDeceasedUserCard />
               ) : (
-                deceasedUsers?.map((deceasedUser: any) => (
+                user?.deceasedUsers?.map((deceasedUser: any) => (
                   //create card component
                   <DeceasedUserCard
                     key={deceasedUser.id}

@@ -6,6 +6,7 @@ const photoSchema = new mongoose.Schema({
   onboarding: { type: mongoose.Schema.Types.ObjectId, ref: "Onboarding" },
   albumId: { type: mongoose.Schema.Types.ObjectId, ref: "Album" },
   place: { type: mongoose.Schema.Types.ObjectId, ref: "Place" }, // Reference to the Place model
+  placeName: { type: String },
   location: { type: String },
   content: { type: String },
   date: { type: Date, default: Date.now },

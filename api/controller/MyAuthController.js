@@ -20,11 +20,11 @@ const createCurrentUser = async (req, res) => {
 
     res.cookie("auth_token", token, {
       httpOnly: true,
-      secure: "false",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 86400000,
     });
 
-    return res.status(200).json({ message: "user registered" });
+    return res.status(200).json({ message: "User registered successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -50,18 +50,18 @@ const loginCurrentUser = async (req, res) => {
 
     res.cookie("auth_token", token, {
       httpOnly: true,
-      secure: "false",
+      secure: process.env.NODE_ENV === "production",
       maxAge: 86400000,
     });
 
-    return res.status(200).json(user);
+    return res.status(200).json({ userId: user._id, name: user.name });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-export const getCurrentUser = async (req, res) => {
+const getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
     if (!user) {
@@ -75,22 +75,24 @@ export const getCurrentUser = async (req, res) => {
   }
 };
 
-export const logoutCurrentUser = async (req, res) => {
+const logoutCurrentUser = async (req, res) => {
   res.cookie("auth_token", "", {
     expires: new Date(0),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
   });
 
-  res.send();
+  res.status(200).json({ message: "Logged out successfully" });
 };
 
-export const validateToken = (req, res) => {
+const validateToken = (req, res) => {
   return res.status(200).send({ userId: req.userId });
 };
 
 export default {
-  validateToken,
   createCurrentUser,
   loginCurrentUser,
   getCurrentUser,
   logoutCurrentUser,
+  validateToken,
 };

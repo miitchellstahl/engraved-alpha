@@ -34,4 +34,7 @@ const uploadImage = async (file) => {
   return uploadResponse.url;
 };
 
-export default { updateCurrentUser };
+export default {
+  updateCurrentUser,
+  // ... helper functions like uploadImage ...
+};

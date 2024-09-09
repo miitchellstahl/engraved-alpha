@@ -62,18 +62,15 @@ const getAllAlbums = async (req, res) => {
       return res.status(404).json({ message: "Deceased user not found" });
     }
 
-    const albums = await Album.find({ deceasedUser: deceasedUserId })
+    const totalAlbumsCount = deceasedUser.albums.length;
+    const albumIds = deceasedUser.albums.slice(skip, skip + limit);
+
+    const albums = await Album.find({ _id: { $in: albumIds } })
       .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
       .populate({
         path: "photos",
-        options: { sort: { createdAt: -1 } }, // Sort photos by createdAt in descending order
+        options: { sort: { createdAt: -1 } },
       });
-
-    const totalAlbumsCount = await Album.countDocuments({
-      deceasedUser: deceasedUserId,
-    });
 
     if (!albums || albums.length === 0) {
       return res.status(404).json({ message: "Albums not found" });
@@ -111,12 +108,11 @@ const getAllPhotos = async (req, res) => {
       return res.status(404).json({ message: "Deceased user not found" });
     }
 
-    const photos = await Photo.find({ deceasedUser: deceasedUserId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-    const photoCount = await Photo.countDocuments({
-      deceasedUser: deceasedUserId,
+    const totalPhotosCount = deceasedUser.photos.length;
+    const photoIds = deceasedUser.photos.slice(skip, skip + limit);
+
+    const photos = await Photo.find({ _id: { $in: photoIds } }).sort({
+      createdAt: -1,
     });
 
     if (!photos || photos.length === 0) {
@@ -124,8 +120,8 @@ const getAllPhotos = async (req, res) => {
     }
 
     res.status(200).json({
-      count: photoCount,
-      pages: Math.ceil(photoCount / limit),
+      count: totalPhotosCount,
+      pages: Math.ceil(totalPhotosCount / limit),
       currentPage: page,
       photos,
       deceasedUser: {
@@ -154,12 +150,11 @@ const getAllPets = async (req, res) => {
       return res.status(404).json({ message: "Deceased user not found" });
     }
 
-    const pets = await Pet.find({ deceasedUser: deceasedUserId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-    const petCount = await Pet.countDocuments({
-      deceasedUser: deceasedUserId,
+    const totalPetsCount = deceasedUser.pets.length;
+    const petIds = deceasedUser.pets.slice(skip, skip + limit);
+
+    const pets = await Pet.find({ _id: { $in: petIds } }).sort({
+      createdAt: -1,
     });
 
     if (!pets || pets.length === 0) {
@@ -167,8 +162,8 @@ const getAllPets = async (req, res) => {
     }
 
     res.status(200).json({
-      count: petCount,
-      pages: Math.ceil(petCount / limit),
+      count: totalPetsCount,
+      pages: Math.ceil(totalPetsCount / limit),
       currentPage: page,
       pets,
       deceasedUser: {
@@ -197,26 +192,24 @@ const getAllPlaces = async (req, res) => {
       return res.status(404).json({ message: "Deceased user not found" });
     }
 
-    const places = await Place.find({ deceasedUser: deceasedUserId })
+    const totalPlacesCount = deceasedUser.places.length;
+    const placeIds = deceasedUser.places.slice(skip, skip + limit);
+
+    const places = await Place.find({ _id: { $in: placeIds } })
       .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
       .populate({
         path: "photos",
         options: { limit: 6, sort: { createdAt: -1 } },
       })
       .exec();
-    const placeCount = await Place.countDocuments({
-      deceasedUser: deceasedUserId,
-    });
 
     if (!places || places.length === 0) {
       return res.status(404).json({ message: "Places not found" });
     }
 
     res.status(200).json({
-      count: placeCount,
-      pages: Math.ceil(placeCount / limit),
+      count: totalPlacesCount,
+      pages: Math.ceil(totalPlacesCount / limit),
       currentPage: page,
       places,
       deceasedUser: {
@@ -245,12 +238,11 @@ const getAllMementos = async (req, res) => {
       return res.status(404).json({ message: "Deceased user not found" });
     }
 
-    const mementos = await Memento.find({ deceasedUser: deceasedUserId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-    const mementoCount = await Memento.countDocuments({
-      deceasedUser: deceasedUserId,
+    const totalMementosCount = deceasedUser.mementos.length;
+    const mementoIds = deceasedUser.mementos.slice(skip, skip + limit);
+
+    const mementos = await Memento.find({ _id: { $in: mementoIds } }).sort({
+      createdAt: -1,
     });
 
     if (!mementos || mementos.length === 0) {
@@ -258,8 +250,8 @@ const getAllMementos = async (req, res) => {
     }
 
     res.status(200).json({
-      count: mementoCount,
-      pages: Math.ceil(mementoCount / limit),
+      count: totalMementosCount,
+      pages: Math.ceil(totalMementosCount / limit),
       currentPage: page,
       mementos,
       deceasedUser: {
@@ -367,6 +359,11 @@ const createAlbum = async (req, res) => {
 
 const createPlacePost = async (req, res) => {
   try {
+    const deceasedUser = await DeceasedUser.findById(req.params.deceasedUserId);
+    if (!deceasedUser) {
+      return res.status(404).json({ message: "Deceased user not found" });
+    }
+
     const place = new Place({
       placeLongitude: req.body.placeLongitude,
       placeLatitude: req.body.placeLatitude,
@@ -377,8 +374,7 @@ const createPlacePost = async (req, res) => {
       author: req.body.author,
     });
 
-    if (req.files.length > 0) {
-      // Save each photo and add it to the album
+    if (req.files && req.files.length > 0) {
       for (const file of req.files) {
         const photoUrl = await uploadImage(file);
 
@@ -386,17 +382,21 @@ const createPlacePost = async (req, res) => {
           photoUrl,
           deceasedUser: place.deceasedUser,
           place: place._id, // Reference the place by its ObjectId
-          content: place.placeName,
+          placeName: place.placeName,
+          content: req.body.content,
           author: place.author,
           date: req.body.date,
           type: "Photo",
         });
 
         await photo.save();
+        deceasedUser.photos.push(photo._id);
       }
     }
 
     await place.save();
+    deceasedUser.places.push(place._id);
+    await deceasedUser.save();
 
     return res.status(200).json({ _id: place._id });
   } catch (error) {
@@ -404,11 +404,17 @@ const createPlacePost = async (req, res) => {
     res.status(500).json({ message: "Failed to create place post" });
   }
 };
+
 const createPhotoPost = async (req, res) => {
   try {
     console.log(req.files.length);
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "No files uploaded" });
+    }
+
+    const deceasedUser = await DeceasedUser.findById(req.params.deceasedUserId);
+    if (!deceasedUser) {
+      return res.status(404).json({ message: "Deceased user not found" });
     }
 
     if (
@@ -438,12 +444,16 @@ const createPhotoPost = async (req, res) => {
           date: req.body.date,
           location: req.body.location,
           place: place._id,
+          placeName: place.placeName,
         });
 
         await photo.save();
+        deceasedUser.photos.push(photo._id);
       }
 
       await place.save();
+      deceasedUser.places.push(place._id);
+      await deceasedUser.save();
 
       return res.status(200).json({ message: "Photos and place uploaded" });
     } else {
@@ -461,7 +471,10 @@ const createPhotoPost = async (req, res) => {
         });
 
         await photo.save();
+        deceasedUser.photos.push(photo._id);
       }
+
+      await deceasedUser.save();
 
       return res.status(200).json({ message: "Photos uploaded" });
     }
@@ -477,6 +490,11 @@ const createPetPost = async (req, res) => {
       return res.status(400).json({ message: "No files uploaded" });
     }
 
+    const deceasedUser = await DeceasedUser.findById(req.params.deceasedUserId);
+    if (!deceasedUser) {
+      return res.status(404).json({ message: "Deceased user not found" });
+    }
+
     for (const file of req.files) {
       const photoUrl = await uploadImage(file);
 
@@ -489,9 +507,14 @@ const createPetPost = async (req, res) => {
       });
 
       await pet.save();
+      deceasedUser.pets.push(pet._id);
     }
 
-    return res.status(200).json({ message: "Uploaded pets" });
+    await deceasedUser.save();
+
+    return res
+      .status(200)
+      .json({ message: "Uploaded pets and associated with deceased user" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to create pet post" });
@@ -500,6 +523,11 @@ const createPetPost = async (req, res) => {
 
 const createMementoPost = async (req, res) => {
   try {
+    const deceasedUser = await DeceasedUser.findById(req.params.deceasedUserId);
+    if (!deceasedUser) {
+      return res.status(404).json({ message: "Deceased user not found" });
+    }
+
     const memento = new Memento({
       content: req.body.content,
       author: req.body.author,
@@ -509,6 +537,8 @@ const createMementoPost = async (req, res) => {
     });
 
     await memento.save();
+    deceasedUser.mementos.push(memento._id);
+    await deceasedUser.save();
 
     return res.status(200).json({ _id: memento._id });
   } catch (error) {
@@ -578,6 +608,10 @@ const getOneDeceasedUser = async (req, res) => {
       })
       .populate({
         path: "places",
+        options: { limit: 6, sort: { createdAt: -1 } },
+      })
+      .populate({
+        path: "albums",
         options: { limit: 6, sort: { createdAt: -1 } },
       })
       .exec();
