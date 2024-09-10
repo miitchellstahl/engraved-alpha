@@ -414,7 +414,7 @@ const DeceasedUserTabPage: FunctionComponent<DeceasedUserTabPageProps> = ({
                         key={place._id}
                         placeName={place.placeName}
                         type={`${place.type}Page`}
-                        author={place.author}
+                        title={place.author}
                         content={place.content}
                         date={place.date}
                       />

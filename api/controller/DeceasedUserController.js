@@ -109,11 +109,10 @@ const getAllPhotos = async (req, res) => {
     }
 
     const totalPhotosCount = deceasedUser.photos.length;
-    const photoIds = deceasedUser.photos.slice(skip, skip + limit);
-
-    const photos = await Photo.find({ _id: { $in: photoIds } }).sort({
-      createdAt: -1,
-    });
+    const photos = await Photo.find({ _id: { $in: deceasedUser.photos } })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
 
     if (!photos || photos.length === 0) {
       return res.status(404).json({ message: "Photos not found" });
@@ -151,11 +150,10 @@ const getAllPets = async (req, res) => {
     }
 
     const totalPetsCount = deceasedUser.pets.length;
-    const petIds = deceasedUser.pets.slice(skip, skip + limit);
-
-    const pets = await Pet.find({ _id: { $in: petIds } }).sort({
-      createdAt: -1,
-    });
+    const pets = await Photo.find({ _id: { $in: deceasedUser.pets } })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
 
     if (!pets || pets.length === 0) {
       return res.status(404).json({ message: "Pets not found" });
@@ -197,6 +195,8 @@ const getAllPlaces = async (req, res) => {
 
     const places = await Place.find({ _id: { $in: placeIds } })
       .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip)
       .populate({
         path: "photos",
         options: { limit: 6, sort: { createdAt: -1 } },
@@ -239,11 +239,10 @@ const getAllMementos = async (req, res) => {
     }
 
     const totalMementosCount = deceasedUser.mementos.length;
-    const mementoIds = deceasedUser.mementos.slice(skip, skip + limit);
-
-    const mementos = await Memento.find({ _id: { $in: mementoIds } }).sort({
-      createdAt: -1,
-    });
+    const mementos = await Memento.find({ _id: { $in: deceasedUser.mementos } })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
 
     if (!mementos || mementos.length === 0) {
       return res.status(404).json({ message: "Mementos not found" });
@@ -280,14 +279,16 @@ const getAlbum = async (req, res) => {
       return res.status(404).json({ message: "Album not found" });
     }
 
-    // Fetch the photos with pagination
-    const photos = await Photo.find({ albumId: album._id })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
+    const totalPhotosCount = album.photos.length;
 
-    // Count the total number of photos in the album
-    const totalPhotosCount = await Photo.countDocuments({ albumId: album._id });
+    const photos = await Photo.find({ _id: { $in: album.photos } })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
+
+    if (!photos || photos.length === 0) {
+      return res.status(404).json({ message: "Photos not found" });
+    }
 
     const deceasedUser = await DeceasedUser.findById(album.deceasedUser);
     if (!deceasedUser) {
@@ -318,6 +319,11 @@ const createAlbum = async (req, res) => {
     const { title, albumDate } = req.body;
     const deceasedUserId = req.params.deceasedUserId;
 
+    const deceasedUser = await DeceasedUser.findById(deceasedUserId);
+    if (!deceasedUser) {
+      return res.status(404).json({ message: "Deceased user not found" });
+    }
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "No files uploaded" });
     }
@@ -345,10 +351,13 @@ const createAlbum = async (req, res) => {
 
       await photo.save();
       album.photos.push(photo._id); // Add the photo to the album's photos array
+      deceasedUser.photos.push(photo._id);
     }
 
     // Save the album
     await album.save();
+    deceasedUser.albums.push(album._id);
+    await deceasedUser.save();
 
     res.status(200).json({ albumId: album._id });
   } catch (error) {
@@ -628,39 +637,60 @@ const getOneDeceasedUser = async (req, res) => {
 };
 
 const getDeceasedUserWallContent = async (req, res) => {
-  const { deceasedUserId, page = 1, limit = 10 } = req.params;
+  const { deceasedUserId } = req.params;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
 
   if (!deceasedUserId) {
     return res.status(400).json({ message: "Invalid deceased user ID" });
   }
 
   try {
-    const photos = await Photo.find({ deceasedUser: deceasedUserId })
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
+    const deceasedUser = await DeceasedUser.findById(deceasedUserId);
+    if (!deceasedUser) {
+      return res.status(404).json({ message: "Deceased user not found" });
+    }
 
-    const mementos = await Memento.find({ deceasedUser: deceasedUserId })
+    // Fetch all content types
+    const photos = await Photo.find({ _id: { $in: deceasedUser.photos } })
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .skip(skip);
 
-    const places = await Place.find({ deceasedUser: deceasedUserId })
+    const mementos = await Memento.find({ _id: { $in: deceasedUser.mementos } })
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .skip(skip);
 
-    const pets = await Pet.find({ deceasedUser: deceasedUserId })
+    const places = await Place.find({ _id: { $in: deceasedUser.places } })
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .skip(skip);
+
+    const pets = await Pet.find({ _id: { $in: deceasedUser.pets } })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
 
     // Merge and sort all content by createdAt
     const allContent = [...photos, ...mementos, ...places, ...pets].sort(
       (a, b) => b.createdAt - a.createdAt
     );
 
-    return res.status(200).json(allContent);
+    // Calculate total count for pagination
+    const totalCount =
+      deceasedUser.photos.length +
+      deceasedUser.mementos.length +
+      deceasedUser.places.length +
+      deceasedUser.pets.length;
+
+    return res.status(200).json({
+      content: allContent,
+      currentPage: page,
+      totalPages: Math.ceil(totalCount / limit),
+      totalCount: totalCount,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to get wall view content" });
